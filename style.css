@@ -1,0 +1,1236 @@
+/* --- 1. CONFIGURAÇÕES GLOBAIS E VARIÁVEIS --- */
+:root {
+    /* Paleta de Cores (Refinada para Contraste) */
+    --bg-body: #FDFDFB; /* Branco mais limpo para contraste */
+    --bg-card: #FFFFFF;
+    --bg-highlight: #FFFEFA; /* Fundo sutil para destaque premium */
+    
+    /* Textos - Ajustados para legibilidade WCAG AA/AAA */
+    --text-primary: #1F2922; /* Mais profundo que o anterior */
+    --text-secondary: #4A524C; /* Cinza escurecido para leitura em fundo claro */
+    --text-tertiary: #8C9690; /* Apenas para microcopys não essenciais */
+    
+    /* Acentos */
+    --accent-gold: #BC955C; /* Dourado levemente mais fechado para leitura */
+    --accent-gold-light: rgba(188, 149, 92, 0.12);
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    
+    /* Botão CTA (Gradiente Sutil para Volume) */
+    --btn-gradient-start: #2D3A30;
+    --btn-gradient-end: #1A221C;
+
+    /* Tipografia */
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+
+    /* Sombras e Elevações (Layered Shadows - Efeito 3D Suave) */
+    --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 4px 6px -1px rgba(45, 58, 48, 0.05), 0 2px 4px -1px rgba(45, 58, 48, 0.03);
+    --shadow-md: 0 10px 15px -3px rgba(45, 58, 48, 0.08), 0 4px 6px -2px rgba(45, 58, 48, 0.04);
+    --shadow-lg: 0 20px 25px -5px rgba(45, 58, 48, 0.1), 0 10px 10px -5px rgba(45, 58, 48, 0.04);
+    
+    /* Espaçamento e Layout */
+    --container-width: 1000px;
+    --radius-lg: 24px;
+    --radius-md: 12px;
+    --input-height: 52px; /* Touch target otimizado */
+}
+
+/* Reset e Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container Responsivo */
+.container {
+    width: 88%; /* Mais margem lateral no mobile */
+    max-width: var(--container-width);
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+.container.narrow { max-width: 640px; }
+
+/* Tipografia */
+h1, h2, h3, h4 { 
+    font-family: var(--font-serif); 
+    color: var(--text-primary); 
+    font-weight: 600;
+    letter-spacing: -0.02em; /* Títulos mais elegantes */
+}
+
+p { 
+    color: var(--text-secondary); 
+    font-size: 1.05rem; /* Leve aumento para leitura mobile */
+}
+
+/* --- 2. COMPONENTES DE UI --- */
+
+/* Botões (Com feedback tátil) */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 36px; /* Botão mais alto para dedo */
+    border-radius: 100px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    /* Gradiente sutil para criar volume */
+    background: linear-gradient(180deg, var(--btn-gradient-start) 0%, var(--btn-gradient-end) 100%);
+    color: #fff;
+    box-shadow: 0 10px 20px -5px rgba(45, 58, 48, 0.3); /* Sombra colorida, não preta */
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(45, 58, 48, 0.4);
+}
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 10px -5px rgba(45, 58, 48, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid rgba(45, 58, 48, 0.3); /* Borda mais visível */
+    color: var(--text-primary);
+}
+.btn-outline:hover { 
+    background: rgba(0,0,0,0.03); 
+    border-color: var(--text-primary);
+}
+
+.full-width { width: 100%; }
+
+/* Cards (Profundidade corrigida) */
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 32px; /* Ajuste mobile-first */
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-subtle);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Inputs (Formulário Otimizado) */
+.input-group { margin-bottom: 24px; }
+
+.input-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.input-group input {
+    width: 100%;
+    height: var(--input-height); /* Altura fixa para touch */
+    padding: 0 16px;
+    border: 1px solid #D1D6D3; /* Contraste de borda melhorado */
+    background: #FAFAFA;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px; /* Evita zoom automático no iOS */
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    -webkit-appearance: none;
+}
+
+.input-group input:focus {
+    border-color: var(--accent-gold);
+    background: #fff;
+    box-shadow: 0 0 0 4px var(--accent-gold-light);
+    outline: none;
+}
+
+.input-group input::placeholder { color: #A0A8A3; }
+
+/* Badges */
+.badge {
+    display: inline-block;
+    background: var(--bg-body);
+    color: var(--accent-gold);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 20px;
+    border: 1px solid var(--accent-gold-light);
+}
+
+/* --- 3. SEÇÕES ESPECÍFICAS --- */
+
+/* Background 2026 */
+.background-decor {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-serif);
+    font-size: 28vw;
+    color: var(--text-primary);
+    opacity: 0.03; /* Muito sutil para não brigar com texto */
+    z-index: 0;
+    pointer-events: none;
+    line-height: 1;
+}
+
+/* HERO SECTION */
+.hero-section {
+    padding: 120px 0 60px 0; /* Mais espaço no topo */
+    text-align: center;
+}
+
+.hero-tag {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.hero-title {
+    font-size: 3rem; /* Ajustado para mobile */
+    margin-bottom: 20px;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    max-width: 90%;
+    margin-left: auto; margin-right: auto;
+    line-height: 1.5;
+}
+
+.hero-text {
+    font-size: 1rem;
+    margin-bottom: 48px;
+    max-width: 580px;
+    margin-left: auto; margin-right: auto;
+    color: var(--text-secondary);
+}
+
+/* AMOSTRA GRATUITA */
+.sample-section { padding: 40px 0 80px 0; }
+.sample-card { 
+    max-width: 580px; 
+    margin: 0 auto; 
+    text-align: center;
+    background: #fff;
+    box-shadow: var(--shadow-md); /* Mais destaque pro form */
+}
+
+.card-title { font-size: 1.8rem; margin-bottom: 12px; }
+.card-text { 
+    margin-bottom: 32px; 
+    font-size: 1rem; 
+    line-height: 1.6;
+}
+
+.premium-form { text-align: left; margin-top: 32px; }
+
+.microcopy {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    text-align: center;
+    margin-top: 16px;
+    line-height: 1.4;
+}
+
+.form-actions {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.link-secondary {
+    color: var(--text-secondary);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.link-secondary:hover { color: var(--text-primary); }
+
+/* AUTORIDADE (Grid) */
+.authority-section { padding: 80px 0; text-align: center; }
+
+.section-title { 
+    font-size: 2.2rem; 
+    margin-bottom: 16px; 
+    line-height: 1.2;
+}
+.section-subtitle { 
+    font-family: var(--font-sans); 
+    text-transform: uppercase; 
+    letter-spacing: 0.15em; 
+    font-size: 0.8rem;
+    margin-bottom: 48px;
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.grid-chapters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 0 10px; /* Evita corte lateral */
+}
+
+/* --- ESTILO DOS CAPÍTULOS (COM DESCRIÇÃO) --- */
+
+.chapter-item {
+    background: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--border-subtle);
+    font-family: var(--font-serif);
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-xs);
+    
+    /* Configuração Flex para alinhar número e texto */
+    display: flex;
+    align-items: flex-start; /* Alinha no topo para acompanhar o texto longo */
+    gap: 16px;
+    text-align: left;
+}
+
+.chapter-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-gold-light);
+}
+
+/* O container de texto ao lado do número */
+.chapter-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* Espaço entre título e parágrafo */
+}
+
+.chapter-text strong {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    line-height: 1.2;
+    display: block;
+}
+
+.chapter-text p {
+    font-family: var(--font-sans); /* Fonte sem serifa para leitura fácil */
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* ESTILO DA BOLINHA DOURADA (Centralização Perfeita) */
+.chapter-number {
+    /* Tamanho fixo para garantir círculo perfeito */
+    width: 42px;
+    height: 42px;
+    
+    /* Cor e Borda */
+    background-color: var(--accent-gold);
+    color: #fff;
+    border-radius: 50%;
+    
+    /* O SEGREDO DA CENTRALIZAÇÃO (Flexbox) */
+    display: flex;
+    justify-content: center; /* Alinha horizontalmente */
+    align-items: center;     /* Alinha verticalmente */
+    
+    /* Tipografia Nítida */
+    font-family: var(--font-serif); /* Mantém a elegância da serifa */
+    font-weight: 600;  /* Negrito para nitidez */
+    font-size: 1.25rem; /* Tamanho confortável */
+    line-height: 1;    /* Remove espaçamentos invisíveis de fonte */
+    
+    /* Garante que a bolinha não amasse em telas pequenas */
+    flex-shrink: 0;
+    
+    /* Sombra interna sutil para volume */
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
+
+    /* AJUSTE FINO: Alinha a bolinha com o topo da letra do título */
+    margin-top: 2px;
+}
+
+/* Ajuste Mobile */
+@media (max-width: 480px) {
+    .chapter-item { padding: 16px; }
+    /* No mobile a fonte diminui um pouco, então ajustamos a bolinha */
+    .chapter-number { width: 36px; height: 36px; font-size: 1.1rem; margin-top: 1px; }
+}
+
+/* COMPARAÇÃO DE PLANOS */
+.comparison-section { padding: 60px 0 100px 0; }
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile first: empilhado */
+    gap: 40px;
+    align-items: center;
+    margin-top: 40px;
+}
+
+/* Card Free */
+.plan-card.basic { 
+    background: transparent; 
+    border: 1px solid rgba(0,0,0,0.06); 
+    box-shadow: none; 
+    padding: 32px 24px;
+}
+
+/* Card Premium (O Destaque) */
+.plan-card.premium { 
+    background: var(--bg-highlight); /* Fundo levemente destacado */
+    border: 2px solid var(--accent-gold); 
+    box-shadow: var(--shadow-lg); /* Profundidade máxima */
+    position: relative;
+    padding: 48px 32px;
+    z-index: 1; /* Fica acima visualmente */
+	
+}
+
+.plan-name { font-size: 1.5rem; margin-bottom: 12px; }
+
+.plan-price { 
+    font-size: 1.75rem; 
+    color: var(--text-primary); 
+    font-weight: 700; 
+    margin-bottom: 24px; 
+    font-family: var(--font-serif);
+}
+.price-small { 
+    font-size: 0.9rem; 
+    font-weight: 400; 
+    color: var(--text-secondary); 
+    display: block; 
+    margin-top: 4px;
+    font-family: var(--font-sans);
+}
+
+.badge-highlight {
+    position: absolute;
+    top: -1px; 
+    right: -1px;
+    background: #059669;
+    color: white;
+    font-size: 0.75rem;
+    padding: 8px 20px;
+    border-bottom-left-radius: 16px;
+    border-top-right-radius: 22px; /* Segue a curva do card */
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 10px rgba(197, 160, 101, 0.3);
+}
+
+.plan-features { 
+    list-style: none; 
+    margin-bottom: 32px; 
+    text-align: left; 
+}
+.plan-features li {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    font-size: 0.95rem;
+}
+.plan-features li::before {
+    content: '•';
+    color: var(--accent-gold);
+    font-weight: bold;
+    margin-right: 10px;
+}
+.plan-features li strong { color: var(--text-primary); font-weight: 600; }
+
+.microcopy-center { 
+    text-align: center; 
+    font-size: 0.75rem; 
+    margin-top: 16px; 
+    opacity: 0.8; 
+    line-height: 1.4;
+}
+
+/* FAQ */
+.faq-section { padding: 60px 0 120px 0; }
+.accordion { margin-top: 32px; }
+.accordion-item { border-bottom: 1px solid rgba(0,0,0,0.08); }
+
+.accordion-header {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 24px 0;
+    font-size: 1.1rem;
+    font-family: var(--font-serif);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: color 0.3s;
+}
+.accordion-header:hover { color: var(--accent-gold); }
+
+.accordion-header::after {
+    content: '+';
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--accent-gold);
+    transition: transform 0.3s;
+}
+.accordion-header.active::after { transform: rotate(45deg); }
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+}
+.accordion-content p { 
+    padding-bottom: 24px; 
+    font-size: 1rem; 
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 90%;
+}
+
+/* Footer */
+footer { 
+    text-align: center; 
+    padding: 60px 0 40px 0; 
+    opacity: 0.6; 
+    font-size: 0.85rem; 
+    border-top: 1px solid rgba(0,0,0,0.05);
+    margin-top: 40px;
+}
+
+/* --- 4. RESPONSIVIDADE & MEDIA QUERIES --- */
+
+/* Tablet e Desktop */
+@media (min-width: 768px) {
+    .container { width: 90%; }
+    
+    .hero-title { font-size: 4.5rem; letter-spacing: -0.03em; }
+    .hero-subtitle { font-size: 1.5rem; }
+    
+    .plans-grid { 
+        grid-template-columns: 1fr 1.15fr; /* Premium visivelmente maior */
+        gap: 32px; 
+    }
+    
+    .plan-card.premium { 
+        transform: scale(1.02); /* Efeito de destaque apenas no desktop */
+    }
+    
+    .card { padding: 48px; }
+	
+}
+
+/* Mobile Tweak Específico */
+@media (max-width: 480px) {
+    .btn { width: 100%; } /* Botão full width no mobile facilita o clique */
+    
+    .hero-section { padding-top: 100px; }
+    
+    .chapter-item { text-align: left; }
+    
+    /* Remove escala do premium no mobile para não cortar a tela */
+    .plan-card.premium { transform: none; margin: 0 -10px; width: auto; border-radius: 20px; }
+}
+
+
+/* Animações utilitárias */
+.fade-in { opacity: 0; animation: fadeIn 1s ease forwards; }
+.fade-in-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.fade-in-up.visible { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* --- NOVO: EFEITO DE LUZ LED CIRCULANTE NO CARD DA AMOSTRA --- */
+
+/* 1. Prepara o card para receber o efeito */
+.sample-card {
+    position: relative;
+    z-index: 0; /* Garante que o conteúdo fique sobre a luz */
+    /* Removemos a borda estática original para a luz passar */
+    border: none !important; 
+    /* Mantemos o background original e o raio da borda */
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden; /* Garante que a luz siga a curva da borda */
+}
+
+/* 2. A camada de luz que gira (Fica atrás do conteúdo) */
+.sample-card::before {
+    content: '';
+    position: absolute;
+    z-index: -2;
+    /* Define a espessura da luz (quanto mais negativo, mais grossa) */
+    left: -3px;
+    top: -3px;
+    width: calc(100% + 6px);
+    height: calc(100% + 6px);
+    
+    /* O gradiente cônico cria o feixe de luz */
+    background: conic-gradient(
+        from 0deg,
+        transparent 0%,     /* Começa transparente */
+        var(--accent-gold) 15%, /* A cabeça da luz (cor dourada) */
+        var(--accent-gold-light) 25%, /* O rastro da luz (mais claro) */
+        transparent 50%     /* O restante do caminho transparente */
+    );
+    
+    border-radius: calc(var(--radius-lg) + 3px); /* Ajusta a curva */
+    /* Animação de rotação infinita */
+    animation: rotate-border 4s linear infinite;
+}
+
+/* 3. A máscara interna (Cobre o centro do gradiente para formar a linha) */
+.sample-card::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    /* Cobre exatamente a área interna do card */
+    left: 1px;
+    top: 1px;
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    background: var(--bg-card); /* Mesma cor do fundo do card */
+    border-radius: var(--radius-lg);
+}
+
+/* 4. Definição da animação de rotação */
+@keyframes rotate-border {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* --- NOVO: ETIQUETA "BÁSICO" PARA O CARD GRATUITO --- */
+
+.badge-basic {
+    position: absolute;
+    top: -1px; /* Cola no topo */
+    right: -1px; /* Cola na direita */
+    
+    /* Cor: Vermelho Argila Suave (Elegante, não agressivo) */
+    background: #D68C8C; 
+    color: #fff;
+    
+    font-size: 0.8rem; /* Um pouco menor que o "Recomendado" para hierarquia */
+    padding: 6px 14px;
+    
+    /* Design System: Segue a curva do card */
+    border-bottom-left-radius: 12px;
+    border-top-right-radius: 22px; /* Acompanha a borda do card se tiver radius */
+    
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: var(--font-sans);
+    
+    /* Sombra sutil para não ficar chapado */
+    box-shadow: 0 2px 6px rgba(214, 140, 140, 0.25);
+    
+    z-index: 2;
+}
+
+/* Opcional: Reforçar levemente a borda do card básico ao passar o mouse */
+/* Isso ajuda a mostrar que ele é clicável, mas mantém o status de "básico" */
+.plan-card.basic:hover {
+    border-color: #D68C8C; /* A borda fica levemente avermelhada no hover */
+}
+
+/* --- SEÇÃO DE GARANTIA (RISCO ZERO) --- */
+
+/* --- SEÇÃO DE GARANTIA (AJUSTADA: MAIS PRÓXIMA DA OFERTA) --- */
+
+.guarantee-section {
+    /* Removemos o padding do topo (era 60px) para subir */
+    padding: 0 0 80px 0; 
+    
+    /* TRUQUE VISUAL: Margem negativa para "puxar" a seção para cima */
+    margin-top: -50px; 
+    
+    position: relative;
+    z-index: 5; /* Garante que fique acima de qualquer elemento anterior */
+    background: transparent; /* Fundo transparente para fluir com a seção anterior */
+}
+
+.guarantee-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    padding: 40px;
+    
+    /* Layout Flex para colocar Imagem ao lado do Texto */
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    
+    /* Sombra suave */
+    box-shadow: var(--shadow-md); /* Sombra um pouco mais forte para destacar */
+    max-width: 800px;
+    margin: 0 auto; /* Centraliza o card na tela */
+}
+
+/* Container da Imagem */
+.guarantee-image {
+    flex-shrink: 0;
+    width: 120px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.guarantee-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.guarantee-card:hover .guarantee-image img {
+    transform: scale(1.05) rotate(5deg);
+}
+
+/* Tipografia da Garantia */
+.guarantee-content h3 {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.guarantee-content p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.guarantee-content p:last-child { margin-bottom: 0; }
+
+/* RESPONSIVIDADE (MOBILE) */
+@media (max-width: 600px) {
+    .guarantee-section {
+        margin-top: -30px; /* Ajuste menor no mobile para não encavalar */
+        padding-bottom: 60px;
+    }
+
+    .guarantee-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 32px 24px;
+        gap: 24px;
+    }
+
+    .guarantee-image { width: 100px; }
+    .guarantee-content h3 { font-size: 1.35rem; }
+}
+
+/* --- CORREÇÃO DA LISTA (TEXTO CONTÍNUO NA MESMA LINHA) --- */
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0;
+}
+
+.plan-features li {
+    /* Volta ao comportamento padrão de texto para fluir na mesma linha */
+    display: block; 
+    position: relative;      /* Cria a referência para posicionar a bolinha */
+    padding-left: 24px;      /* Abre espaço na esquerda para a bolinha não ficar em cima do texto */
+    margin-bottom: 14px;     /* Espaço entre os itens */
+    text-align: left;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;        /* Altura da linha para boa leitura */
+}
+
+/* 1. A Bolinha (Posicionada "flutuando" à esquerda) */
+.plan-features li::before {
+    content: "•";
+    position: absolute;      /* Tira a bolinha do fluxo do texto */
+    left: 0;                 /* Cola ela na esquerda */
+    
+    color: var(--secondary); /* Laranja/Dourado */
+    font-weight: bold;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+/* 2. O Título em Negrito (Agora flui junto com o texto) */
+.plan-features li strong {
+    color: var(--text-primary);
+    font-weight: 700;
+    /* IMPORTANTE: Sem display block ou flex aqui, para manter na mesma linha */
+}
+
+
+/* Barra de Pagamento e Segurança */
+.payment-security-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+    color: #666;
+    font-size: 12px;
+}
+
+.payment-methods,
+.security-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.payment-security-bar svg {
+    color: #999; /* Cor dos ícones */
+    stroke-width: 1.5;
+}
+
+/* Mobile Tweak Específico */
+@media (max-width: 480px) {
+    .btn { width: 100%; } 
+    
+    .hero-section { padding-top: 100px; }
+    
+    .chapter-item { text-align: left; }
+    
+    /* CORREÇÃO DO ESPAÇAMENTO DOS CARDS */
+    .plan-card.premium { 
+        transform: none; 
+        width: auto; 
+        border-radius: 20px;
+        
+        /* AQUI ESTAVA O ERRO (margin: 0 -10px) */
+        /* Mudamos para ter 32px em cima/baixo e -10px nos lados */
+        margin: 32px -10px; 
+    }
+}
+
+#oferta-premium {
+    scroll-margin-top: 40px; /* Garante que o scroll pare um pouco antes do card */
+}
+
+/* --- BOTÃO ELITE GOLD (ALTO CONTRASTE) --- */
+
+.plan-card.premium .btn-primary {
+    /* 1. FORMATO */
+    border-radius: 12px;
+    
+    /* 2. GRADIENTE MAIS RICO (MENOS PÁLIDO) */
+    /* Removemos os tons muito brancos para o texto não sumir */
+    background: linear-gradient(
+        90deg, 
+        #C69C49 0%,   /* Ouro Médio */
+        #F7E5AA 25%,  /* Luz (mas controlada) */
+        #EBC368 50%,  /* Ouro Vivo */
+        #F7E5AA 75%,  /* Luz */
+        #C69C49 100%  /* Ouro Médio */
+    );
+    background-size: 200% auto;
+
+    /* 3. CONTRASTE MÁXIMO NO TEXTO */
+    /* Mudamos para um verde quase preto -> Legibilidade total */
+    color: #051a10; 
+    
+    font-weight: 900; /* Extra bold para a letra ficar grossa e visível */
+    font-size: 1.1rem; /* Leve aumento */
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid rgba(0,0,0,0.1); /* Borda sutil para definição */
+    
+    /* 4. SOMBRA NO TEXTO (O SEGREDO DO DESTAQUE) */
+    /* Uma sombra escura e suave atrás da letra para desgrudar do fundo */
+    text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.25);
+    
+    /* Sombra do botão */
+    box-shadow: 0 10px 30px -5px rgba(198, 156, 73, 0.5);
+    
+    /* Animação do brilho metálico */
+    animation: shine-metallic 4s linear infinite;
+    
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* HOVER: Mais contraste ainda */
+.plan-card.premium .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px -5px rgba(198, 156, 73, 0.7);
+    /* No hover, o texto fica PRETO absoluto para garantir o clique */
+    color: #000000; 
+}
+
+/* ACTIVE */
+.plan-card.premium .btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 15px -3px rgba(198, 156, 73, 0.4);
+}
+
+/* MANTENHA AS ANIMAÇÕES IGUAIS */
+@keyframes shine-metallic {
+    to { background-position: 200% center; }
+}
+
+.plan-card.premium .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    /* O reflexo agora é branco puro, mas rápido */
+    background: linear-gradient(
+        to right,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.6) 50%,
+        rgba(255,255,255,0) 100%
+    );
+    transform: skewX(-25deg);
+    animation: light-sweep 5s infinite; 
+    pointer-events: none;
+}
+
+@keyframes light-sweep {
+    0%, 40% { left: -100%; }
+    50% { left: 200%; }
+    100% { left: 200%; }
+}
+
+/* --- AJUSTE PARA O ÍCONE NO BOTÃO --- */
+
+.plan-card.premium .btn-primary {
+    /* ... (Mantenha as cores e gradientes que fizemos antes) ... */
+    
+    /* ALINHAMENTO DO ÍCONE */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espaço entre o texto e a seta */
+}
+
+/* Tamanho e Cor da Seta */
+.plan-card.premium .btn-primary svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 3px; /* Seta mais grossa para impor respeito */
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); /* Movimento suave */
+}
+
+/* A ANIMAÇÃO DOS "BIG PLAYERS" */
+/* Quando passar o mouse no botão, a seta anda para o lado */
+.plan-card.premium .btn-primary:hover svg {
+    transform: translateX(5px); /* Desliza 5px para a direita */
+}
+
+
+/* ==========================================================================
+   CSS DOS CARDS - VERSÃO FINAL RESPONSIVA
+   ========================================================================== */
+
+/* 1. ESTRUTURA DO CARD (Container Principal) */
+.plan-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza tudo horizontalmente */
+    text-align: center;  /* Centraliza textos que quebram */
+    padding: 40px 24px;  /* Padding lateral reduzido para mobile não quebrar */
+    position: relative;  /* Para posicionar badges se necessário */
+    height: 100%;        /* Garante que fiquem da mesma altura */
+}
+
+/* ==========================================================================
+   CORREÇÃO DO PREÇO (VALOR E PERÍODO LADO A LADO)
+   ========================================================================== */
+
+/* ==========================================================================
+   PREÇO MODERNO E ALINHADO (FONTE 'INTER')
+   ========================================================================== */
+
+.plan-price {
+    display: flex;
+    flex-wrap: wrap;       /* Permite quebra de linha p/ descrição */
+    align-items: baseline; /* Alinha o preço e o /ano pela base da letra */
+    justify-content: center;
+    width: 100%;
+    margin: 24px 0 32px 0;
+    column-gap: 4px;       /* Espaço pequeno e elegante entre valor e /ano */
+}
+
+/* O Valor (R$ 59,00) - AGORA COM FONTE 'INTER' */
+.price-value {
+    /* Mudamos para Inter para garantir precisão e alinhamento */
+    font-family: 'Inter', sans-serif; 
+    font-weight: 700;     /* Negrito forte para destaque */
+    color: #1F2922;
+    line-height: 1;
+    white-space: nowrap;
+    
+    /* Tamanho calibrado para Sans-Serif */
+    font-size: 3.5rem; 
+    letter-spacing: -1.5px; /* Junta levemente os números (Fica muito profissional) */
+}
+
+/* O Período (/ano) */
+.price-period {
+    font-family: 'Inter', sans-serif; /* Mesma fonte para casar perfeito */
+    font-size: 1.1rem;
+    color: #6B7280;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* A Descrição Pequena (Força a quebra de linha) */
+.price-small {
+    flex-basis: 100%;   /* Força ir para a linha de baixo */
+    width: 100%;
+    text-align: center;
+    
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #6B7280;
+    font-weight: 400;
+    margin-top: 8px;    /* Espaço entre o preço e a descrição */
+    line-height: 1.4;
+}
+
+/* AJUSTE MOBILE */
+@media (max-width: 768px) {
+    .price-value {
+        font-size: 2.8rem; /* Um pouco menor no celular para não quebrar */
+    }
+    
+    .price-period {
+        font-size: 1rem;
+    }
+}
+
+/* A Descrição Pequena (Força a quebra de linha) */
+.price-small {
+    flex-basis: 100%;   /* Ocupa 100% da largura, forçando-se a ir para a linha de baixo */
+    width: 100%;        /* Garantia extra */
+    text-align: center; /* Centraliza o texto na nova linha */
+    
+    font-size: 0.95rem;
+    color: #6B7280;
+    font-weight: 400;
+    margin-top: 15px;    /* Espaço entre o preço e a descrição */
+    line-height: 1.4;
+}
+
+/* AJUSTE MOBILE */
+@media (max-width: 768px) {
+    .price-value {
+        font-size: 3rem; /* Reduz levemente para caber lado a lado no celular */
+    }
+    
+    .price-period {
+        font-size: 1rem;
+    }
+}
+
+.price-small {
+    font-size: 0.80rem;
+    color: #6B7280;
+    font-weight: 400;
+    margin-top: 8px;
+    display: block;
+    line-height: 1.4;
+    max-width: 280px; /* Impede que o texto fique muito largo */
+}
+
+/* ==========================================================================
+   LISTA DE BENEFÍCIOS (SEM BOLINHAS E ALINHADA)
+   ========================================================================== */
+
+.plan-features {
+    width: 100%;
+    text-align: left; /* Lista alinhada à esquerda sempre */
+    margin: 0;
+    padding: 0 !important; /* Remove padding padrão do navegador */
+    list-style: none !important; /* Remove marcadores padrão */
+}
+
+.plan-features li {
+    display: flex;
+    align-items: flex-start; /* Ícone no topo se o texto quebrar */
+    justify-content: flex-start;
+    margin-bottom: 16px;
+    font-size: 1rem;
+    color: #374151;
+    line-height: 1.5;
+    
+    /* REMOVE QUALQUER BOLINHA HERDADA */
+    list-style-type: none !important;
+    padding-left: 0 !important;
+}
+
+/* MATA O ELEMENTO FANTASMA (A BOLINHA PRETA) */
+.plan-features li::marker,
+.plan-features li::before,
+.plan-features li::after {
+    content: "" !important;
+    display: none !important;
+}
+
+/* O CHECK VERDE */
+.plan-features .check {
+    color: #10B981;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-right: 12px; /* Distância perfeita do texto */
+    line-height: 1.3;   /* Ajuste fino para alinhar com a primeira linha de texto */
+    flex-shrink: 0;     /* Garante que o ícone nunca amasse */
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE (MOBILE) - O AJUSTE CRUCIAL
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .plan-card {
+        padding: 32px 20px; /* Mais compacto no celular */
+        margin-bottom: 24px;
+    }
+
+    .price-value {
+        font-size: 3rem; /* Reduz um pouco o preço para não estourar a tela */
+    }
+
+    .plan-name {
+        font-size: 1.4rem; /* Título um pouco menor */
+    }
+
+    .plan-features li {
+        font-size: 0.95rem; /* Texto da lista levemente menor para caber mais */
+        margin-bottom: 14px;
+    }
+    
+    /* Ajuste fino para centralizar visualmente o bloco de preço */
+    .plan-price {
+        margin: 20px 0 24px 0;
+    }
+}
+
+/* ==========================================================================
+   BOTÃO PREMIUM "CHAMPANHE GOLD" (IGUAL À REFERÊNCIA)
+   ========================================================================== */
+
+.plan-card.premium .btn-primary {
+    /* 1. O FORMATO */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* Espaço entre o texto e a seta */
+    
+    padding: 20px 24px; /* Botão alto e clicável */
+    border-radius: 12px; /* Cantos arredondados modernos */
+    border: 1px solid rgba(255, 255, 255, 0.4); /* Borda interna sutil para brilho */
+    
+    /* 2. O DEGRADÊ "CHAMPANHE" (Igual à imagem) */
+    /* Vai do dourado médio -> dourado claro (luz) -> dourado médio */
+    background: linear-gradient(90deg, #B68D40 0%, #F4E2A7 50%, #B68D40 100%);
+    background-size: 200% auto; /* Prepara para animação */
+    
+    /* 3. A TIPOGRAFIA */
+    font-family: 'Inter', sans-serif;
+    font-weight: 800; /* Negrito forte */
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #0F1F12; /* Verde Quase Preto (Contraste Máximo) */
+    text-decoration: none;
+    
+    /* 4. SOMBRA SUAVE (Efeito Flutuante) */
+    box-shadow: 0 10px 25px -5px rgba(227, 195, 112, 0.4);
+    
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* EFEITO AO PASSAR O MOUSE (HOVER) */
+.plan-card.premium .btn-primary:hover {
+    background-position: right center; /* O brilho se move */
+    transform: translateY(-3px); /* Sobe levemente */
+    box-shadow: 0 15px 35px -5px rgba(227, 195, 112, 0.6); /* Sombra aumenta */
+}
+
+/* EFEITO AO CLICAR */
+.plan-card.premium .btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 15px -3px rgba(227, 195, 112, 0.4);
+}
+
+/* 5. A SETA (SVG) */
+.plan-card.premium .btn-primary svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 3px; /* Seta grossinha para combinar com a fonte */
+    transition: transform 0.3s ease;
+}
+
+/* Animação da Seta no Hover */
+.plan-card.premium .btn-primary:hover svg {
+    transform: translateX(6px); /* Seta anda para a direita */
+}
+
+
+
+
+

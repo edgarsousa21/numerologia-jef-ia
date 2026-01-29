@@ -1,0 +1,3026 @@
+/* =========================================================
+   TOKENS GLOBAIS / VARIÁVEIS
+   ========================================================= */
+:root {
+    /* Cores de Identidade & Marca */
+    --c-primary: #1f4029;       /* Verde Botânico Escuro */
+    --c-accent: #6b9c7d;        /* Verde Médio */
+    --c-danger: #ef4444;        /* Amor / Alerta */
+    --c-sage-pastel: #dfece6;   /* Verde Sage (Abas Ativas) */
+    
+    /* Superfícies e Fundos */
+    --bg-main: #f2f5f3;         /* Canvas Geral */
+    --bg-sheet: #ffffff;        /* Folha de Leitura */
+    
+    /* Texto */
+    --c-text: #2c3e50;
+    --c-text-sec: #7f8c8d;
+    --c-text-soft: #889995;
+
+    /* Paleta de Cards (Tons Pastéis) */
+    --card-peach: #fcece3;      /* CP-1 */
+    --card-lilac: #e8e6f3;      /* CP-2 */
+    --card-mint: #e0f2f1;       /* CP-3 */
+    --card-cream: #fff9c4;      /* CP-4 */
+
+    /* Tipografia */
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+
+    /* Sistema de Profundidade (Shadows Consolidadas) */
+    --sh-soft: 0 10px 30px rgba(31, 64, 41, 0.05);
+    --sh-premium: 0 4px 6px -1px rgba(31, 64, 41, 0.03), 0 10px 15px -3px rgba(31, 64, 41, 0.08);
+    --sh-special: 0 20px 25px -5px rgba(31, 64, 41, 0.06), 0 10px 10px -5px rgba(31, 64, 41, 0.04);
+    --sh-active: 0 15px 30px rgba(31, 64, 41, 0.12);
+
+    /* Geometria e Safe Areas */
+    --radius-lg: 32px;
+    --radius-md: 24px;
+    --radius-sm: 12px;
+    --safe-area-top: env(safe-area-inset-top);
+    --safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+/* =========================================================
+   RESET / BASE
+   ========================================================= */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+
+body {
+    margin: 0; padding: 0;
+    font-family: var(--font-sans);
+    background-color: var(--bg-main);
+    color: var(--c-text);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+/* =========================================================
+   ANIMAÇÕES & INTERAÇÕES
+   ========================================================= */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+.ripple:active { transform: scale(0.97); opacity: 0.9; transition: transform 0.1s; }
+
+/* Animação "Live" para Portais */
+@keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 75, 75, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 75, 75, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 75, 75, 0); }
+}
+@keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.8; }
+    80%, 100% { transform: scale(3); opacity: 0; }
+}
+
+/* =========================================================
+   LAYOUT / CONTAINERS
+   ========================================================= */
+.dashboard-wrapper {
+    display: flex; flex-direction: column;
+    min-height: 100vh; background-color: var(--bg-main);
+}
+
+/* Folha de Conteúdo (Sheet Architecture) */
+.content-sheet-white {
+    background: var(--bg-sheet);
+    border-radius: 30px 30px 0 0;
+    flex: 1;
+    padding-top: 30px;
+    padding-bottom: calc(80px + var(--safe-area-bottom));
+    position: relative; z-index: 2;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.03);
+    margin-top: 10px;
+}
+
+/* =========================================================
+   HEADER / HERO DASHBOARD
+   ========================================================= */
+.header-premium {
+    padding: calc(30px + var(--safe-area-top)) 24px 40px;
+    background-color: var(--bg-main);
+    text-align: center;
+    position: relative; z-index: 1;
+}
+
+.avatar-center { display: flex; justify-content: center; margin-bottom: 10px; }
+.avatar-circle {
+    width: 60px; height: 60px;
+    background: #dfece6; color: var(--c-primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+}
+
+.header-date-top {
+    font-size: 0.8rem; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 600;
+    color: var(--c-text-sec); margin-bottom: 5px;
+}
+
+.header-greeting-serif {
+    font-family: var(--font-serif);
+    font-size: 2rem; color: var(--c-primary);
+    margin: 0; font-weight: 400;
+}
+.header-greeting-serif span { font-weight: 700; }
+
+/* =========================================================
+   WIDGET MENSAGEM DO DIA (UNIFICADO)
+   ========================================================= */
+.section-daily-msg { margin-top: 25px; }
+
+.daily-widget-premium {
+    display: flex;
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--sh-premium);
+    border: 1px solid rgba(0,0,0,0.03);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.daily-widget-premium:active { transform: scale(0.98); }
+
+/* Lateral de Data */
+.msg-date-side {
+    background: var(--c-primary); color: #ffffff;
+    min-width: 65px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    line-height: 1;
+}
+.d-day { font-size: 1.4rem; font-weight: 800; }
+.d-month { font-size: 0.65rem; opacity: 0.7; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
+
+/* Conteúdo */
+.msg-content-premium {
+    flex: 1; padding: 12px 16px;
+    display: flex; flex-direction: column; justify-content: center;
+    background: linear-gradient(to right, #f2f7f4, #ffffff);
+    align-items: flex-start; text-align: left;
+}
+
+.label-internal {
+    font-size: 0.6rem; letter-spacing: 1.2px; font-weight: 800;
+    color: var(--c-accent); margin-bottom: 6px;
+    opacity: 0.6; align-self: flex-start; text-transform: uppercase;
+}
+
+.msg-flex-text {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; width: 100%;
+}
+.msg-flex-text p {
+    margin: 0; font-size: 0.92rem; font-weight: 600;
+    color: var(--c-primary); line-height: 1.3;
+}
+.msg-flex-text i { font-size: 1rem; color: var(--c-accent); opacity: 0.4; }
+
+/* =========================================================
+   NAVEGAÇÃO / ABAS (TABS)
+   ========================================================= */
+.tabs-nav-container {
+    position: relative; padding: 8px 0 12px;
+    overflow: hidden; margin-bottom: 20px;
+}
+
+/* Scroll Hint (Fade Lateral) */
+.tabs-nav-container::after {
+    content: ""; position: absolute; top: 0; right: 0;
+    width: 60px; height: 100%;
+    background: linear-gradient(to right, transparent, var(--bg-sheet));
+    pointer-events: none; z-index: 5;
+}
+
+.label-tiny {
+    display: block; padding: 0 24px;
+    font-size: 0.7rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: #889995; opacity: 1; margin-bottom: 16px;
+}
+
+.tabs-scroll {
+    display: flex; gap: 12px;
+    overflow-x: auto; padding: 10px 24px 20px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    /* Ajuste fino */
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    justify-content: flex-start !important;
+}
+.tabs-scroll::-webkit-scrollbar { display: none; }
+
+/* Botão da Aba */
+.tab-pill {
+    white-space: nowrap; padding: 10px 22px;
+    background: #f4f6f5; color: #9aa5a1;
+    border-radius: 30px; font-size: 0.9rem; font-weight: 600;
+    border: 1px solid transparent;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    scroll-snap-align: start; flex-shrink: 0;
+}
+
+/* Aba Ativa */
+.tab-pill.active {
+    background: var(--c-sage-pastel); color: var(--c-primary);
+    box-shadow: 0 4px 10px rgba(31, 64, 41, 0.08), 0 2px 4px rgba(31, 64, 41, 0.04);
+    border: 1px solid rgba(31, 64, 41, 0.08);
+    transform: translateY(-1.5px); font-weight: 700;
+}
+
+/* =========================================================
+   NOVO: BOX DIDÁTICO / EXPLICATIVO
+   ========================================================= */
+.didactic-box {
+    background: #ffffff;
+    border-left: 4px solid var(--c-primary);
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #4a5568;
+    box-shadow: var(--sh-premium);
+    border: 1px solid rgba(31, 64, 41, 0.05);
+}
+
+/* Temas para o box didático */
+.didactic-box.theme-orange {
+    border-color: #e67e22;
+    background: linear-gradient(to right, #fff8e1, #ffffff);
+}
+.didactic-box.theme-blue {
+    border-color: #2980b9;
+    background: linear-gradient(to right, #e3f2fd, #ffffff);
+}
+.didactic-box.theme-green {
+    border-color: var(--c-primary);
+    background: linear-gradient(to right, #e8f5e9, #ffffff);
+}
+
+/* Intro Box Premium (usado no Dashboard) */
+.intro-box-premium {
+    margin-bottom: 25px;
+    background: #ffffff;
+    padding: 18px 20px;
+    border-radius: 16px;
+    border-left: 4px solid var(--c-accent);
+    font-size: 0.9rem;
+    color: var(--c-text);
+    line-height: 1.6;
+    box-shadow: 0 4px 12px rgba(31, 64, 41, 0.04);
+}
+
+/* =========================================================
+   CARDS E GRIDS (DASHBOARD)
+   ========================================================= */
+.grid-cards-premium {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 15px; padding: 0 24px;
+}
+
+.card-premium {
+    padding: 24px; border-radius: var(--radius-md);
+    background: #fff;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    min-height: 180px; position: relative;
+    box-shadow: var(--sh-premium);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    transition: transform 0.2s;
+}
+.card-premium:active { transform: scale(0.97); }
+
+.card-premium i {
+    height: 32px; margin-bottom: 20px;
+    display: flex; align-items: center;
+    font-size: 1.8rem; opacity: 0.8;
+}
+
+.card-premium h3 {
+    font-family: var(--font-serif); font-size: 1.3rem;
+    margin: 0 0 6px 0; color: var(--c-primary);
+    min-height: 3.4rem; display: flex; align-items: flex-start;
+    line-height: 1.2;
+}
+
+.card-premium p {
+    font-size: 0.85rem; margin: 0; opacity: 0.7;
+    line-height: 1.3; margin-top: auto;
+}
+
+/* Cores de Fundo */
+.cp-1 { background-color: var(--card-peach); }
+.cp-2 { background-color: var(--card-lilac); }
+.cp-3 { background-color: var(--card-mint); }
+.cp-4 { background-color: var(--card-cream); }
+
+/* =========================================================
+   BANNERS ESPECIAIS (AMOR & CASA)
+   ========================================================= */
+.special-section-title {
+    font-family: var(--font-serif); font-size: 1.3rem; color: var(--c-primary);
+    padding: 0 24px; margin: 40px 0 16px;
+    display: flex; align-items: center; gap: 8px;
+}
+
+.premium-banner {
+    background: linear-gradient(145deg, #ffffff, #fcfdfd);
+    border-radius: 24px; padding: 24px; margin: 0 24px 24px;
+    position: relative; display: flex; align-items: center; gap: 20px;
+    box-shadow: var(--sh-special); border: 1px solid rgba(0,0,0,0.03);
+    overflow: visible; transition: transform 0.2s ease;
+}
+.premium-banner:active { transform: scale(0.98); }
+
+/* Temas com "Aura" Colorida */
+.premium-banner.theme-love {
+    background: linear-gradient(135deg, #fffbfc, #fff2f2);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.15), var(--sh-special);
+}
+.theme-love .banner-icon { background: #ffebee; color: #d32f2f; }
+
+.premium-banner.theme-house {
+    background: linear-gradient(135deg, #fdffff, #f0f7f5);
+    border: 1px solid rgba(38, 166, 154, 0.15);
+    box-shadow: 0 10px 25px -5px rgba(38, 166, 154, 0.15), var(--sh-special);
+}
+.theme-house .banner-icon { background: #e0f2f1; color: #00897b; }
+
+.banner-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; flex-shrink: 0;
+}
+.banner-content { flex: 1; }
+.banner-title {
+    font-family: var(--font-serif); font-size: 1.15rem; font-weight: 600;
+    color: var(--c-primary); margin: 0 0 4px 0;
+}
+.banner-desc {
+    font-size: 0.85rem; color: var(--c-text-soft); margin: 0;
+    line-height: 1.4; opacity: 0.85;
+}
+.banner-arrow { color: #cbd5e1; font-size: 1.1rem; opacity: 0.3; }
+
+/* Etiquetas Flutuantes */
+.badge-tag {
+    position: absolute; top: -10px; right: 16px;
+    font-size: 0.45rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    padding: 4px 12px; border-radius: 6px; z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.badge-new { background: #ef4444; color: white; }
+.badge-exclusive { background: #1f4029; color: #e2ede6; }
+
+/* =========================================================
+   TIMELINE E CICLOS
+   ========================================================= */
+.timeline-container { position: relative; padding-left: 10px; }
+.timeline-line {
+    position: absolute; left: 29px; top: 15px; bottom: 15px;
+    width: 1px; background: linear-gradient(to bottom, transparent, #e0e0e0, transparent); z-index: 0;
+}
+.timeline-fill { width: 100%; background: var(--c-accent); height: 0; transition: height 1s; }
+
+.timeline-step {
+    display: flex; align-items: center; gap: 15px;
+    position: relative; z-index: 1;
+    background: #ffffff;
+    border: 2px solid var(--card-cream);
+    border-radius: 16px; padding: 15px;
+    margin: 0 24px 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.timeline-step.active {
+    border-color: var(--c-primary);
+    box-shadow: 0 8px 20px rgba(31, 64, 41, 0.08);
+    transform: scale(1.02);
+}
+
+/* Círculo do Ciclo Refinado */
+.cycle-circle {
+    width: 40px; height: 40px;
+    background: var(--card-cream); color: var(--c-primary); opacity: 0.8;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-family: var(--font-serif); font-size: 1.1rem;
+    flex-shrink: 0;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid rgba(31, 64, 41, 0.1);
+}
+
+.timeline-step.active .cycle-circle {
+    background: var(--c-primary); color: #fff; opacity: 1;
+}
+
+.timeline-step:not(.active) .cycle-circle {
+    background: #f4f6f5 !important;
+    color: var(--c-primary) !important;
+    border: 1px solid rgba(31, 64, 41, 0.1) !important;
+}
+
+.step-info { flex: 1; }
+.cycle-years { font-size: 0.85rem; color: var(--c-text-sec); font-weight: 600; }
+
+/* =========================================================
+   CARDS DE DESAFIOS (REFINADOS)
+   ========================================================= */
+.section-block .boutique-card {
+    /* Estrutura Física */
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+    padding: 22px 24px !important;
+    border-radius: 20px !important;
+
+    /* Acabamento Premium */
+    background: #ffffff !important;
+    border: 1.5px solid rgba(107, 156, 125, 0.15) !important;
+    
+    /* Profundidade */
+    box-shadow: 
+        0 10px 25px -5px rgba(31, 64, 41, 0.05),
+        0 4px 8px -2px rgba(31, 64, 41, 0.02) !important;
+        
+    transition: transform 0.2s ease !important;
+}
+
+.section-block .boutique-card:active {
+    transform: scale(0.98) !important;
+    border-color: var(--c-primary) !important;
+}
+
+/* Círculo Interno do Desafio */
+.section-block .boutique-card .cycle-circle {
+    width: 42px !important; height: 42px !important;
+    background: #f4f7f5 !important;
+    border: 1px solid rgba(31, 64, 41, 0.08) !important;
+    color: var(--c-primary) !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
+
+.stat-label {
+    letter-spacing: 1.5px !important;
+    font-size: 0.65rem !important;
+    opacity: 0.7 !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+}
+
+/* =========================================================
+   PORTAIS / MOMENTOS (CARROSSEL)
+   ========================================================= */
+.momento-carousel {
+    display: flex; overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 25px 24px 40px; gap: 24px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+
+.momento-card-premium {
+    min-width: 230px; height: 325px;
+    flex-shrink: 0; position: relative;
+    background: #ffffff; border-radius: 32px;
+    padding: 25px 20px;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    transition: all 0.4s ease;
+}
+
+.momento-card-premium.active {
+    border: 2px solid var(--c-primary);
+    box-shadow: var(--sh-active);
+    transform: translateY(-3px); z-index: 10;
+}
+
+.momento-tag-top {
+    border: 1px solid #d4c1a8; border-radius: 20px;
+    padding: 4px 16px; font-size: 0.55rem; letter-spacing: 2px;
+    font-weight: 700; color: #8a7b68; margin-bottom: 15px;
+}
+
+.momento-main-title {
+    font-family: var(--font-serif); font-size: 1.8rem;
+    color: var(--c-primary); margin: 5px 0;
+}
+
+.momento-phrase-italic {
+    font-size: 0.92rem; font-style: italic;
+    color: #4a5568; line-height: 1.3;
+}
+
+.momento-time-row {
+    margin-top: 18px; font-size: 0.88rem;
+    color: var(--c-primary); display: flex; align-items: center; gap: 10px;
+}
+
+.momento-status-badge {
+    margin-top: 18px; background: #f8fbf9;
+    padding: 6px 14px; border-radius: 30px;
+    font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;
+    color: var(--c-primary); display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+
+.pulse-dot {
+    width: 8px; height: 8px; background: #ff4b4b;
+    border-radius: 50%; position: relative;
+    animation: pulse-red 2s infinite;
+}
+.pulse-dot::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: inherit; border-radius: inherit; z-index: -1;
+    animation: pulse-ring 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.momento-action-footer {
+    margin-top: auto; color: #1f4029;
+    font-weight: 700; font-size: 0.75rem;
+    display: flex; align-items: center; gap: 8px; cursor: pointer;
+}
+
+/* =========================================================
+   FERRAMENTAS & UTILITÁRIOS
+   ========================================================= */
+.tools-grid {
+    display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;
+}
+
+.tool-card-vibrant {
+    min-width: 100px; height: 100px;
+    background: #f8f9fa; border-radius: 20px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; border: 1px solid #eee;
+}
+
+.t-icon {
+    padding: 12px; border-radius: 50%;
+    font-size: 1.4rem; margin-bottom: 8px;
+    display: inline-flex;
+}
+.t-sorte { color: #b67e3a; background: rgba(182, 126, 58, 0.1); }
+.t-dias { color: #e65100; background: rgba(230, 81, 0, 0.1); }
+.t-cores { color: #1e88e5; background: rgba(30, 136, 229, 0.1); }
+.t-cristais { color: #6a1b9a; background: rgba(106, 27, 154, 0.1); }
+.t-ervas { color: #2e7d32; background: rgba(46, 125, 50, 0.1); }
+
+.tool-card-vibrant h4 { font-size: 0.75rem; margin: 0; color: var(--c-text); }
+
+/* =========================================================
+   VIEWS DE DETALHE & FORMULÁRIO (READING SHEET)
+   ========================================================= */
+.view-container {
+    min-height: 100vh;
+    padding: 24px; padding-bottom: 100px;
+    background: var(--bg-sheet);
+}
+
+.hero-header {
+    position: relative;
+    padding: 30px 24px 60px;
+    text-align: center; color: #ffffff;
+}
+
+.theme-green  { background: radial-gradient(circle at top, #1f4029, #132619); }
+.theme-purple { background: radial-gradient(circle at top, #4b468a, #1a1835); }
+.theme-orange { background: radial-gradient(circle at top, #d48c31, #965a19); }
+.theme-blue   { background: radial-gradient(circle at top, #8aaae6, #4a6396); }
+
+.hero-label {
+    font-size: 0.75rem; letter-spacing: 3px; font-weight: 700;
+    text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    margin: 50px 0 12px; display: block; color: #ffffff;
+}
+
+.hero-number {
+    font-family: var(--font-sans);
+    font-size: 7rem; font-weight: 700; line-height: 1; margin: 0;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+    -webkit-text-fill-color: #ffffff; color: #ffffff;
+}
+
+.hero-number.hero-number-tool {
+    font-size: 3.2rem; letter-spacing: -1px; line-height: 1.1;
+    margin: 20px 0; width: 100%; white-space: normal;
+    padding: 0 20px;
+}
+
+.hero-title {
+    font-family: var(--font-serif); font-size: 1.6rem; font-weight: 400; margin-bottom: 8px;
+}
+.hero-subtitle {
+    font-size: 0.95rem; opacity: 0.9; font-weight: 300;
+    font-style: italic; max-width: 80%; margin: 15px auto 0;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2); 
+	margin-bottom: 1.5rem;
+}
+
+.btn-back-white {
+    position: absolute; top: 24px; left: 24px;
+    background: none; border: none;
+    color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    font-size: 1rem; font-weight: 500;
+    display: flex; align-items: center; gap: 8px; z-index: 10;
+}
+
+.btn-back-light {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--c-primary); font-size: 0.9rem; font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Folha de Leitura Sobreposta */
+.reading-sheet {
+    background: #ffffff;
+    border-radius: 32px 32px 0 0;
+    margin-top: -48px;
+    padding: 32px 24px 160px;
+    position: relative; z-index: 5;
+    min-height: 60vh;
+    box-shadow: 0 -15px 45px rgba(0,0,0,0.08);
+}
+
+.content-section {
+    margin-bottom: 35px;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+    padding-bottom: 25px;
+}
+
+.section-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 20px; border-bottom: 1px solid #f0f4f2;
+    padding-bottom: 10px; margin-top: 30px;
+}
+
+.section-header i {
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    border-radius: 12px; font-size: 1.2rem;
+    background: #f0f4f1; color: var(--c-primary);
+}
+
+.theme-orange .section-header i { background: #fff3e0; color: #e67e22; }
+.theme-purple .section-header i { background: #f3eefb; color: #4b468a; }
+
+.section-title {
+    font-family: var(--font-sans); font-size: 1.1rem;
+    font-weight: 800; letter-spacing: -0.2px; color: var(--c-primary);
+}
+
+.text-body {
+    font-size: 1.05rem; line-height: 1.75; letter-spacing: -0.01em;
+    color: #3e4859; text-align: left;
+}
+.text-body p { margin-bottom: 24px; }
+
+/* =========================================================
+   NUMEROLOGIA DA CASA (ESTILOS ESPECÍFICOS)
+   ========================================================= */
+.casa-intro-header {
+    margin-top: 20px; margin-bottom: 30px;
+    padding-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.casa-category-block { margin-bottom: 40px; }
+
+.casa-insight-card {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.04);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.casa-header-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+
+.casa-icon-badge {
+    width: 32px; height: 32px;
+    background: #f0f4f1; color: var(--c-primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-family: var(--font-serif);
+}
+
+.harmonize-tool-box {
+    background: linear-gradient(145deg, #ffffff, #f4f9f6);
+    border: 1px solid #b2dfdb; border-radius: 24px;
+    padding: 30px 24px; margin-top: 40px;
+    box-shadow: 0 10px 30px rgba(0, 77, 64, 0.06);
+    position: relative; overflow: hidden;
+}
+.harmonize-tool-box::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+    background: linear-gradient(to right, var(--c-accent), var(--c-primary));
+}
+
+.current-house-display {
+    background: #ffffff;
+    border-radius: 16px; padding: 15px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 25px; border: 1px dashed #cfd8dc;
+}
+.current-house-display .big-number {
+    font-size: 1.8rem; font-weight: 700;
+    color: var(--c-primary); font-family: var(--font-serif);
+}
+
+/* Formulário de Casa */
+.premium-form-card {
+    background: #ffffff; border-radius: 24px;
+    padding: 30px 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.icon-float-badge {
+    width: 60px; height: 60px;
+    background: #e0f2f1; color: #00897b;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; margin: 0 auto 15px;
+    box-shadow: 0 8px 20px rgba(0, 137, 123, 0.15);
+}
+
+.form-input-premium {
+    width: 100%; padding: 18px;
+    border: 2px solid #f0f2f1; border-radius: 16px;
+    background: #fafcfb; font-size: 1.2rem;
+    font-family: var(--font-serif); color: var(--c-primary);
+    transition: all 0.3s ease;
+}
+.form-input-premium:focus {
+    border-color: var(--c-accent); background: #ffffff;
+    box-shadow: 0 4px 12px rgba(107, 156, 125, 0.1);
+}
+
+/* Card Dual (Luz e Sombra) */
+.dual-tone-card {
+    background: #ffffff; border-radius: 20px;
+    overflow: hidden; border: 1px solid rgba(0,0,0,0.05);
+    margin-bottom: 35px; box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+}
+.tone-block { padding: 24px; }
+.tone-block.light { background: linear-gradient(to bottom right, #e8f5e9, #f1f8e9); color: #2e7d32; }
+.tone-block.shadow { background: linear-gradient(to bottom right, #ffebee, #ffcdd2); color: #c62828; }
+.tone-block h4 { margin: 0 0 10px 0; font-family: var(--font-serif); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+
+/* Citações */
+.quote-bubble {
+    background: #fcfcfc; border: 1px solid #f0f0f0;
+    border-radius: 16px; padding: 16px 20px;
+    margin-bottom: 12px; font-style: italic; color: #546e7a;
+    position: relative; padding-left: 65px !important;
+    min-height: 60px; display: flex; align-items: center;
+}
+.quote-bubble i {
+    position: absolute !important; left: 15px !important; top: 50% !important;
+    transform: translateY(-50%) !important; margin: 0 !important;
+    width: 38px !important; height: 38px !important;
+    display: flex !important; align-items: center; justify-content: center !important;
+    background: #f1f5f3 !important; border-radius: 10px !important;
+    color: #cfd8dc; font-size: 1.2rem;
+}
+
+/* =========================================================
+   MENU INFERIOR (BOTTOM NAV)
+   ========================================================= */
+.app-bottom-nav {
+    position: fixed; bottom: 20px; left: 20px; right: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 20px; padding: 12px 20px;
+    display: flex; justify-content: space-between;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.02); z-index: 100;
+}
+
+.nav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: #bdc3c7; font-size: 1.4rem;
+}
+.nav-btn span { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
+.nav-btn.active { color: var(--c-primary); }
+
+/* =========================================================
+   ELEMENTOS DE FORMULÁRIO GERAL
+   ========================================================= */
+.form-input {
+    width: 100%; padding: 16px;
+    border-radius: 12px; border: 1px solid #eee;
+    background: #fbfbfb; font-size: 1.1rem;
+    font-family: var(--font-serif); transition: all 0.3s;
+}
+.form-input:focus { border-color: var(--c-accent); background: #fff; }
+
+.btn-primary {
+    width: 100%; padding: 18px;
+    background: var(--c-primary); color: #fff;
+    border-radius: 16px; font-size: 1rem; font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 20px rgba(31,64,41,0.2);
+}
+
+.spinner {
+    width: 40px; height: 40px; border: 4px solid #eee;
+    border-top-color: var(--c-primary); border-radius: 50%;
+    animation: spin 1s linear infinite; margin: 0 auto;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* =========================================================
+   OVERRIDE - REFINAMENTOS DE UX/UI PREMIUM
+   ========================================================= */
+
+/* 1. CORREÇÃO DE "SAFE AREA" E SOBREPOSIÇÃO DO MENU */
+/* Garante que o conteúdo nunca termine atrás da barra inferior */
+.content-sheet-white, 
+.reading-sheet {
+    padding-bottom: calc(140px + var(--safe-area-bottom)) !important;
+    min-height: 70vh !important;
+}
+
+/* 2. REFINAMENTO DA BARRA DE NAVEGAÇÃO (Z-INDEX) */
+/* Garante que o menu seja sempre a camada superior absoluta */
+.app-bottom-nav {
+    z-index: 999 !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    bottom: 24px !important;
+    box-shadow: 0 15px 40px rgba(31, 64, 41, 0.15) !important;
+}
+
+/* 3. MELHORIA DE CONTRASTE NAS ABAS (TABS) */
+/* Aumenta a legibilidade das abas inativas conforme identificado nos prints */
+.tab-pill {
+    background: #edf1f0 !important;
+    color: #6a7672 !important; /* Texto mais escuro para leitura clara */
+    transition: all 0.3s ease !important;
+}
+
+.tab-pill.active {
+    background: var(--c-sage-pastel) !important;
+    color: var(--c-primary) !important;
+    font-weight: 800 !important;
+}
+
+/* 4. AJUSTE DE HIERARQUIA NO HERO HEADER */
+/* Melhora o respiro lateral para evitar que o título encoste nas bordas */
+.hero-header {
+    padding: 40px 32px 80px !important;
+}
+
+.hero-number {
+    font-size: 6rem !important;
+    margin: 5px 0 !important;
+    letter-spacing: -2px !important;
+}
+
+/* 5. POLIMENTO DOS CARDS DE DESAFIOS */
+/* Garante alinhamento perfeito e sensação tátil ao clicar */
+.section-block .boutique-card {
+    border: 1.5px solid rgba(31, 64, 41, 0.08) !important;
+    box-shadow: 0 8px 20px rgba(31, 64, 41, 0.04) !important;
+}
+
+/* 6. CORREÇÃO VISUAL PARA O WIDGET DE DURAÇÃO */
+/* Estiliza o widget que corrigimos no JS para parecer um componente nativo */
+.reading-sheet div[style*="background:#f1f8e9"] {
+    border: 1px solid #c8e6c9 !important;
+    box-shadow: 0 4px 12px rgba(27, 94, 32, 0.05) !important;
+}
+
+/* =========================================================
+   REFINAMENTO DE RITMO E PROFUNDIDADE (ABAS TÉCNICAS)
+   ========================================================= */
+
+/* 1. REDESENHO DOS BOXES DE EXPLICAÇÃO (DIDACTIC BOX) */
+.didactic-box, 
+.intro-box-premium {
+    border-left: none !important; /* Remove a borda dura genérica */
+    background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.4)) !important;
+    border: 1px solid rgba(31, 64, 41, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+    box-shadow: var(--sh-soft) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Adiciona um detalhe decorativo sutil que 'encaixa' no design */
+.didactic-box::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--c-accent);
+    opacity: 0.3;
+}
+
+/* Ajuste nos temas para cores mais 'etéreas' */
+.didactic-box.theme-orange { background: rgba(252, 236, 227, 0.4) !important; border-color: rgba(230, 126, 34, 0.1) !important; }
+.didactic-box.theme-blue { background: rgba(227, 242, 253, 0.4) !important; border-color: rgba(41, 128, 185, 0.1) !important; }
+.didactic-box.theme-green { background: rgba(232, 245, 233, 0.4) !important; border-color: rgba(31, 64, 41, 0.1) !important; }
+
+/* 2. PROFUNDIDADE NOS CARDS INTERNOS (CICLOS E DESAFIOS) */
+.timeline-step, 
+.boutique-card {
+    border: none !important; /* Remove a borda 'flat' */
+    background: #ffffff !important;
+    box-shadow: 
+        0 10px 25px -5px rgba(31, 64, 41, 0.05),
+        0 4px 8px -2px rgba(31, 64, 41, 0.02) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin-bottom: 20px !important;
+    padding: 20px !important;
+}
+
+/* Efeito de Elevação ao Tocar (Ritmo de Interação) */
+.timeline-step:active, 
+.boutique-card:active {
+    transform: scale(0.98) translateY(2px) !important;
+    box-shadow: 0 4px 10px rgba(31, 64, 41, 0.1) !important;
+}
+
+/* 3. REFINAMENTO DOS CÍRCULOS (INDICADORES) */
+.cycle-circle {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.8) !important;
+    background: linear-gradient(135deg, #f8f9f8, #ffffff) !important;
+}
+
+/* 4. AJUSTE NOS PORTAIS (MOMENTOS DECISIVOS) */
+.momento-card-premium {
+    border: none !important;
+    box-shadow: var(--sh-special) !important;
+    background: linear-gradient(to bottom, #ffffff, #f9fbf9) !important;
+}
+
+.momento-card-premium.active {
+    border: 1px solid var(--c-accent) !important;
+    box-shadow: var(--sh-active) !important;
+}
+
+/* =========================================================
+   LIQUID UX: TRANSIÇÕES E MICRO-INTERAÇÕES
+   ========================================================= */
+
+/* Animação de Entrada do Conteúdo (Slide + Fade + Scale) */
+@keyframes liquidEntry {
+    0% { 
+        opacity: 0; 
+        transform: translateY(12px) scale(0.97); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+/* Aplicado ao container que envolve o conteúdo das abas */
+.tab-content-wrapper {
+    animation: liquidEntry 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    will-change: transform, opacity; /* Otimização de GPU */
+}
+
+/* Feedback tátil nas Pills de Navegação */
+.tab-pill {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.tab-pill:active {
+    transform: scale(0.92) !important; /* Efeito de compressão ao tocar */
+}
+
+.tab-pill.active {
+    /* Brilho sutil na aba ativa para guiar o olhar */
+    box-shadow: 0 2px 8px rgba(31, 64, 41), 
+                0 2px 4px rgba(31, 64, 41, 0.05) !important;
+}
+
+/* REFINAMENTO DE CORES VIBRACIONAIS NAS FERRAMENTAS */
+.card-premium .ph-fill {
+    transition: all 0.3s ease;
+    padding: 12px;
+    border-radius: 14px;
+}
+
+/* Aplicando cores temáticas apenas no fundo do ícone, de forma sutil */
+.card-premium[onclick*="sorte"] i { background: rgba(182, 126, 58, 0.1) !important; color: #b67e3a !important; }
+.card-premium[onclick*="dias"] i { background: rgba(230, 81, 0, 0.1) !important; color: #e65100 !important; }
+.card-premium[onclick*="cores"] i { background: rgba(30, 136, 229, 0.1) !important; color: #1e88e5 !important; }
+.card-premium[onclick*="cristais"] i { background: rgba(106, 27, 154, 0.1) !important; color: #6a1b9a !important; }
+.card-premium[onclick*="ervas"] i { background: rgba(46, 125, 50, 0.1) !important; color: #2e7d32 !important; }
+.card-premium[onclick*="horas"] i { background: rgba(46, 125, 50, 0.1) !important; color: #000121 !important; }
+
+/* Efeito de destaque no card ao passar o mouse ou tocar */
+.card-premium:active {
+    background-color: #fcfdfd !important;
+    border: 1px solid rgba(31, 64, 41, 0.05) !important;
+}
+
+/* =========================================================
+   REFINAMENTO DE ESCALA: CONTEÚDO INTERNO FERRAMENTAS
+   ========================================================= */
+
+/* Ajusta o tamanho dos números gigantes (Sorte e Dias) */
+.hero-number.hero-number-tool {
+    font-size: 3.2rem !important; /* Reduzido de 7rem para caber em 1 ou 2 linhas */
+    line-height: 1.1 !important;
+    margin: 15px 0 !important;
+    padding: 0 10px !important;
+    letter-spacing: -1px !important;
+    word-break: break-word !important;
+}
+
+/* Ajusta títulos longos de Cristais e Ervas */
+.hero-header .hero-title {
+    font-size: 1.4rem !important; /* Tamanho equilibrado para leitura premium */
+    line-height: 1.3 !important;
+    max-width: 85% !important;
+    margin: 0 auto !important;
+}
+
+/* Garante respiro entre o Hero e a Folha de Leitura */
+.hero-header {
+    padding: 30px 24px 70px !important; /* Compacta o cabeçalho para focar no conteúdo */
+}
+
+/* Corrige o espaçamento de itens dentro da folha de leitura das ferramentas */
+.reading-sheet {
+    margin-top: -35px !important;
+    padding-top: 30px !important;
+}
+
+/* =========================================================
+   REFINAMENTO DE LEITURA FLUIDA (PREMIUM READING)
+   ========================================================= */
+
+/* 1. AJUSTE DO CONTAINER DE LEITURA */
+.reading-sheet {
+    padding: 45px 28px calc(140px + var(--safe-area-bottom)) !important; /* Aumenta margens laterais */
+    line-height: 1.8 !important;
+}
+
+/* 2. OTIMIZAÇÃO DO TEXTO CORRIDO (TEXT-BODY) */
+.text-body {
+    font-size: 1.1rem !important; /* Aumento sutil para 17.6px (padrão Kindle/Medium) */
+    color: #34495e !important; /* Azul ardósia profundo para suavidade */
+    letter-spacing: -0.012em !important; /* Kerning negativo sutil para 'segurar' a palavra */
+}
+
+.text-body p {
+    margin-bottom: 28px !important; /* Mais respiro entre ideias/parágrafos */
+    text-align: left;
+}
+
+/* 3. REFINAMENTO DE TÍTULOS INTERNOS */
+.section-header {
+    margin-top: 45px !important; /* Distancia o título do parágrafo anterior */
+    margin-bottom: 25px !important;
+    border-bottom: 2px solid rgba(0,0,0,0.02) !important;
+}
+
+.section-title {
+    font-size: 1.3rem !important;
+    font-family: var(--font-serif) !important; /* Títulos internos em SERIFA para autoridade */
+    font-weight: 700 !important;
+    color: var(--c-primary) !important;
+    letter-spacing: -0.5px !important;
+}
+
+/* 4. ESTILO DOS ÍCONES DE SEÇÃO */
+.section-header .icon-box {
+    background: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(31, 64, 41, 0.06) !important;
+    border: 1px solid rgba(31, 64, 41, 0.05) !important;
+    border-radius: 12px !important;
+    width: 42px !important;
+    height: 42px !important;
+}
+
+/* 5. ÊNFASE EM CITAÇÕES OU PONTOS CHAVE */
+/* Caso você use <strong> no texto, ele ficará mais elegante */
+.text-body strong {
+    color: var(--c-primary);
+    font-weight: 800;
+}
+
+/* =========================================================
+   REFINAMENTO FINAL: PADRÃO DE LEITURA KINDLE/MEDIUM
+   ========================================================= */
+
+/* 1. SOLTAR O TEXTO DAS BORDAS (AUMENTO DE MARGENS LATERAIS) */
+.reading-sheet {
+    padding-left: 32px !important; 
+    padding-right: 32px !important;
+    padding-top: 50px !important;
+}
+
+/* 2. RITMO VERTICAL E LEITURA DINÂMICA */
+.text-body p {
+    font-size: 1.12rem !important; /* Tamanho 'confort' */
+    line-height: 1.85 !important; /* Ar extra entre linhas */
+    margin-bottom: 32px !important; /* Espaço generoso entre parágrafos */
+    color: #455a64 !important; /* Cinza suave para reduzir contraste agressivo */
+}
+
+/* 3. TRANSFORMAR TÍTULOS EM 'ANCORAS' VISUAIS */
+.section-title {
+    font-family: var(--font-serif) !important;
+    font-size: 1.4rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 12px !important;
+    letter-spacing: -0.5px !important;
+}
+
+/* 4. O 'SUPER RESPIRO' FINAL PARA O MENU NÃO ATRAPALHAR */
+.reading-sheet::after {
+    content: "";
+    display: block;
+    height: 180px !important; /* Garante que o texto acabe muito antes da barra */
+}
+
+/* 5. REFINAMENTO DO BOX DE INTRODUÇÃO */
+.didactic-box {
+    background: #fdfdfd !important;
+    border: 1px solid rgba(0,0,0,0.04) !important;
+    padding: 28px !important;
+    margin-bottom: 45px !important;
+}
+
+/* =========================================================
+   OVERRIDE: LEITURA DE LUXO (PADRÃO KINDLE/MEDIUM)
+   ========================================================= */
+
+/* 1. MARGENS LATERAIS PREMIUM (SOLTA O TEXTO) */
+.reading-sheet {
+    padding-left: 32px !important;  /* Aumenta o respiro lateral */
+    padding-right: 32px !important;
+    padding-top: 50px !important;
+    background: #ffffff !important;
+}
+
+/* 2. RITMO VERTICAL DOS PARÁGRAFOS */
+.text-body p {
+    font-size: 1.15rem !important; /* Tamanho ideal para retina display */
+    line-height: 1.85 !important;  /* Altura de linha 'arjada' */
+    margin-bottom: 30px !important; /* Distância clara entre ideias */
+    color: #455a64 !important;    /* Cinza ardósia suave */
+    letter-spacing: -0.015em !important; /* O segredo da tipografia premium */
+}
+
+/* 3. TÍTULOS COMO ÂNCORAS */
+.section-title {
+    font-family: var(--font-serif) !important;
+    font-size: 1.45rem !important;
+    font-weight: 800 !important;
+    color: var(--c-primary) !important;
+    margin-top: 55px !important; /* Espaço enorme antes do título */
+    margin-bottom: 15px !important;
+    letter-spacing: -0.5px !important;
+}
+
+/* 4. REFINAMENTO DO BOX DE INTRODUÇÃO */
+.didactic-box {
+    border: none !important;
+    background: #fdfaf8 !important; /* Bege quase branco, ultra sofisticado */
+    padding: 30px !important;
+    border-radius: 24px !important;
+    box-shadow: inset 0 0 0 1px rgba(31,64,41,0.03), 0 10px 30px rgba(0,0,0,0.02) !important;
+    margin-bottom: 50px !important;
+}
+
+/* 5. RESPIRO FINAL (SAFE AREA) */
+.reading-sheet::after {
+    content: "";
+    display: block;
+    height: 160px !important; /* Garante que o usuário consiga ler a última linha sem o menu atrapalhar */
+}
+
+/* =========================================================
+   DESKTOP MASTER REFINEMENT: LAYOUT DE AUTORIDADE (1024px+)
+   ========================================================= */
+@media (min-width: 1024px) {
+
+    /* 1. ESTRUTURA DE PALCO (APP WINDOW) */
+    body {
+        background: linear-gradient(135deg, #e2ede6 0%, #f2f5f3 100%) !important;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+    }
+
+    #app {
+        width: 100%;
+        max-width: 1200px; /* Largura ideal para dashboards profissionais */
+        background: var(--bg-main);
+        box-shadow: 0 40px 100px rgba(31, 64, 41, 0.08);
+        min-height: 100vh;
+    }
+
+    /* 2. HEADER E SAUDAÇÃO */
+    .header-premium {
+        padding: 80px 60px 40px !important;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 40px;
+        text-align: left !important;
+    }
+
+    .avatar-center { margin: 0 !important; }
+    
+    .header-greeting-serif {
+        font-size: 3.5rem !important;
+        line-height: 1.1 !important;
+    }
+
+    /* 3. WIDGET MENSAGEM DO DIA (REESTRUTURADO) */
+    /* Deixa de ser uma barra gigante e vira um card de destaque */
+    .section-daily-msg {
+        grid-column: span 2;
+        margin-top: 40px;
+    }
+
+    .daily-widget-premium {
+        max-width: 600px;
+        margin: 0 !important;
+    }
+
+    /* 4. CONTENT SHEET (O CORPO DO APP) */
+    .content-sheet-white {
+        border-radius: 40px 40px 0 0 !important;
+        padding: 60px !important;
+        margin-top: 20px !important;
+        box-shadow: 0 -20px 60px rgba(0,0,0,0.02) !important;
+    }
+
+    /* 5. GRID DE CARDS (RITMO VISUAL) */
+    /* Transformamos o grid de 2 colunas em 4 colunas simétricas */
+    .grid-cards-premium {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 24px !important;
+    }
+
+    .card-premium {
+        min-height: 220px !important;
+        padding: 32px !important;
+    }
+
+    /* 6. ABAS DE NAVEGAÇÃO INTERNA */
+    .tabs-scroll {
+        justify-content: center !important; /* Centraliza as abas no desktop */
+        gap: 20px !important;
+    }
+
+    .tab-pill {
+        padding: 12px 32px !important;
+        font-size: 1rem !important;
+    }
+
+    /* 7. FOLHA DE LEITURA (READING EXPERIENCE) */
+    /* O texto nunca deve ultrapassar 750px para não cansar a vista */
+    .reading-sheet {
+        max-width: 750px !important;
+        margin: -60px auto 0 !important;
+        padding: 60px 80px !important;
+        border-radius: 40px !important;
+    }
+
+    /* 8. DOCK DE NAVEGAÇÃO (ESTILO APPLE DOCK) */
+    .app-bottom-nav {
+        width: fit-content !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: 30px !important;
+        padding: 10px 40px !important;
+        border-radius: 30px !important;
+        gap: 30px !important;
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        box-shadow: 0 20px 50px rgba(31, 64, 41, 0.2) !important;
+    }
+
+    .nav-btn span {
+        font-size: 0.75rem !important;
+    }
+
+    /* 9. BANNERS ESPECIAIS LADO A LADO */
+    .section-block[style*="padding: 0 24px"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 30px !important;
+        padding: 0 !important;
+    }
+    
+    .premium-banner {
+        margin: 0 !important;
+    }
+}
+
+
+/* Container base de todas as telas */
+.view-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Classe específica para centralizar conteúdo */
+.view-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;      /* Centraliza horizontalmente */
+    justify-content: center;    /* Centraliza verticalmente */
+    text-align: center;         /* Garante que o texto fique no meio */
+}
+
+/* Ajuste para o Spinner e textos de Loading */
+.spinner {
+    margin: 0 auto;             /* Força centralização manual se necessário */
+}
+
+.loading-text {
+    width: 100%;
+    text-align: center;
+}
+
+/* Garante que o botão não ocupe a largura toda se não quiser */
+.btn-primary {
+    width: fit-content;
+    margin: 30px auto 0;        /* Centraliza o botão sozinho */
+}
+
+
+/* ============================================================
+   AJUSTES EXCLUSIVOS PARA DESKTOP (TELAS GRANDES)
+   ============================================================ */
+@media (min-width: 1024px) {
+    
+    /* 1. CENTRALIZAÇÃO TOTAL DA TELA DE BEM-VINDO E LOADING */
+    .view-container.view-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;      /* Centraliza horizontalmente */
+        justify-content: center;    /* Centraliza verticalmente */
+        text-align: center;
+        max-width: 1200px;          /* Evita que o texto espalhe demais */
+        margin: 0 auto;             /* Centraliza o container na tela */
+        min-height: 100vh;
+    }
+
+    /* 2. BOTÃO "INICIAR" E "GERAR MAPA" MAIOR NO DESKTOP */
+    .btn-primary {
+        padding: 22px 60px !important; /* Aumenta o tamanho interno */
+        font-size: 1.3rem !important;   /* Texto maior e mais legível */
+        min-width: 350px;               /* Botão mais largo e imponente */
+        border-radius: 20px !important;
+        margin: 40px auto 0 !important; /* Garante centralização e espaço */
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .btn-primary:hover {
+        transform: scale(1.05); /* Efeito de destaque ao passar o mouse */
+    }
+
+    /* 3. CENTRALIZAÇÃO DO DASHBOARD (HEADER "BOA NOITE") */
+    .header-premium {
+        display: flex;
+        flex-direction: column;
+        align-items: center;    /* Centraliza o Avatar, Data e Saudação */
+        text-align: center;
+        padding-top: 80px;      /* Mais espaço no topo no Desktop */
+        padding-bottom: 50px;
+    }
+
+    .header-greeting-serif {
+        font-size: 4.5rem !important; /* Título bem grande e elegante */
+        margin-top: 20px !important;
+        width: 100%;
+    }
+
+    .header-date-top {
+        font-size: 1.1rem;
+        letter-spacing: 4px;    /* Data mais espaçada e moderna */
+    }
+
+    /* 4. AJUSTE DO WIDGET DE MENSAGEM DO DIA NO DESKTOP */
+    .section-daily-msg {
+        display: flex;
+        justify-content: center; /* Centraliza o card de mensagem */
+        width: 100%;
+        margin-top: 30px;
+    }
+
+    .daily-widget-premium {
+        width: 100%;
+        max-width: 650px;        /* Não deixa o card de mensagem ficar largo demais */
+    }
+
+    /* 5. AJUSTE DA "FOLHA" DE CONTEÚDO */
+    .content-sheet-white {
+        max-width: 1100px;       /* Limita a largura do conteúdo para leitura confortável */
+        margin: 0 auto;          /* Centraliza a folha branca */
+        border-radius: 60px 60px 0 0; /* Curvatura mais acentuada */
+        box-shadow: 0 -20px 50px rgba(0,0,0,0.05);
+    }
+}
+
+/* ============================================================
+   AJUSTES EXCLUSIVOS PARA DESKTOP (TELAS GRANDES)
+   ============================================================ */
+@media (min-width: 1024px) {
+    
+    /* 1. CENTRALIZAÇÃO DA TELA DE BEM-VINDO E LOADING */
+    .view-container.view-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;      /* Centraliza horizontalmente */
+        justify-content: center;    /* Centraliza verticalmente */
+        text-align: center;
+        max-width: 1200px;          
+        margin: 0 auto;             /* Centraliza o bloco na tela */
+    }
+
+    /* 2. BOTÕES MAIORES E CENTRALIZADOS NO DESKTOP */
+    /* Alvo: Botão "Iniciar Leitura" e "Gerar Mapa" */
+    .btn-primary {
+        padding: 22px 60px !important; 
+        font-size: 1.3rem !important;   
+        min-width: 400px;               /* Botão bem mais largo no Desktop */
+        margin: 40px auto 0 !important; /* Força a centralização horizontal */
+        display: block !important;
+    }
+
+    /* 3. DASHBOARD: CENTRALIZAR SAUDAÇÃO ("Boa noite, ANA") */
+    .header-premium {
+        display: flex;
+        flex-direction: column;
+        align-items: center;    /* Centraliza Avatar, Data e Saudação */
+        text-align: center;
+        padding: 80px 20px 50px;
+    }
+
+    .header-greeting-serif {
+        font-size: 4.5rem !important; /* Saudação bem grande no monitor */
+        text-align: center;
+        width: 100%;
+    }
+
+    /* 4. CENTRALIZAR WIDGET DE MENSAGEM DO DIA */
+    .section-daily-msg {
+        display: flex;
+        justify-content: center; 
+        width: 100%;
+    }
+
+    .daily-widget-premium {
+        width: 100%;
+        max-width: 700px;        /* Evita que o card de mensagem fique largo demais */
+    }
+
+    /* 5. AJUSTE DA "FOLHA BRANCA" DO CONTEÚDO */
+    .content-sheet-white {
+        max-width: 1100px;       /* Mantém o conteúdo em uma largura confortável para leitura */
+        margin: 0 auto;          /* Centraliza a folha na tela */
+        border-radius: 60px 60px 0 0; 
+    }
+
+    /* 6. CENTRALIZAR FORMULÁRIO (Inputs não ficam gigantes) */
+    #userForm {
+        max-width: 500px;        /* Mantém o formulário elegante no centro */
+        margin: 30px auto 0;
+        text-align: left;        /* Mantém os labels alinhados à esquerda do formulário */
+    }
+}
+
+/* ============================================================
+   ESTILOS ESPECÍFICOS: FERRAMENTA DE HORAS (VERSÃO INTEGRADA)
+   ============================================================ */
+
+/* --- 1. CABEÇALHO ROXO (Ajustado para Mobile) --- */
+.hero-header.theme-purple {
+    background: radial-gradient(circle at 50% 0%, #7B1FA2 0%, #4A148C 100%) !important;
+    color: #ffffff !important;
+    
+    /* Padding superior aumentado para 90px para evitar colisão com o botão voltar */
+    padding: 90px 24px 70px 24px !important; 
+    
+    text-align: center;
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+}
+
+/* Botão Voltar - Posicionamento Absoluto e Estilo Vidro */
+.theme-purple .btn-back-white {
+    position: absolute;
+    top: 25px;  /* Distância do topo conforme print mobile */
+    left: 20px; /* Distância da lateral conforme print mobile */
+    z-index: 100;
+    
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.theme-purple .btn-back-white:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Label "SINAIS DO TEMPO" */
+.theme-purple .hero-label {
+    background: rgba(0, 0, 0, 0.25); 
+    color: #E1BEE7;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Títulos do Cabeçalho */
+.theme-purple .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    line-height: 1.1;
+    font-weight: 400;
+    margin: 0 0 8px 0;
+}
+
+.theme-purple .hero-subtitle {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin: 0;
+    font-style: italic;
+}
+
+.hero-number-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 15px 0;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* --- 2. FOLHA DE LEITURA --- */
+.reading-sheet {
+    background: #ffffff;
+    border-radius: 32px 32px 0 0;
+    margin-top: -40px; /* Sobreposição elegante ao roxo */
+    padding: 30px 24px 100px;
+    position: relative;
+    z-index: 5;
+    min-height: 70vh;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+}
+
+/* --- 3. ABAS DE NAVEGAÇÃO --- */
+.tabs-nav-container {
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.tabs-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tabs-scroll::-webkit-scrollbar { display: none; }
+
+.tab-pill {
+    padding: 10px 10px;
+    border-radius: 25px;
+    background: #F3F4F6;
+    color: #64748B;
+    border: none;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tab-pill.active {
+    background: #4A148C;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(74, 20, 140, 0.3);
+}
+
+/* --- 4. GRID DE HORAS (3 Colunas Lado a Lado) --- */
+.grid-horas-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.hora-bubble {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 16px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hora-bubble:active {
+    transform: scale(0.96);
+    background: #F8FAFC;
+}
+
+.hora-bubble strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: #1A202C;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.hora-bubble span {
+    font-size: 0.65rem;
+    color: #94A3B8;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+/* --- 5. CARDS DE REFLEXÃO (7 DIAS) --- */
+.card-reflexao-7dias {
+    background: #FFFFFF;
+    border: 1px solid #F1F5F9;
+    border-left: 5px solid #7B1FA2;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.day-badge {
+    background: #F3E5F5;
+    color: #7B1FA2;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.card-reflexao-7dias h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #2D3748;
+    margin: 5px 0 8px 0;
+}
+
+.card-reflexao-7dias p {
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* --- 6. DETALHES (TEXTOS E DIDÁTICA) --- */
+.content-section {
+    margin-bottom: 30px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.section-header .icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #F3E5F5;
+    color: #7B1FA2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    color: #1E293B;
+    font-weight: 700;
+    margin: 0;
+}
+
+.text-body {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #334155;
+}
+
+.didactic-box {
+    background: linear-gradient(to right, #FAFAFA, #FFFFFF);
+    border: 1px dashed #E1BEE7;
+    border-left: 4px solid #7B1FA2;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 30px 0;
+}
+
+.didactic-box h4 {
+    color: #6A1B9A;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.didactic-box p {
+    font-size: 1.05rem;
+    color: #34495e;
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.text-italic.quote-border {
+    font-style: italic;
+    color: #475569;
+    border-left: 3px solid #7B1FA2;
+    padding-left: 15px;
+    margin-left: 5px;
+}
+
+.list-topics {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-topics li {
+    margin-bottom: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.list-topics .icon-check {
+    color: #7B1FA2;
+    font-size: 1.2rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.list-topics span {
+    font-size: 1rem;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.spacer-bottom {
+    height: 80px;
+}
+
+/* --- 7. AJUSTES DESKTOP --- */
+@media (min-width: 1024px) {
+    .reading-sheet {
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 40px 40px 0 0;
+        padding-top: 50px;
+    }
+
+    .grid-horas-container {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 20px;
+    }
+
+    .hora-bubble {
+        padding: 25px 10px;
+    }
+
+    .hora-bubble strong {
+        font-size: 1.5rem;
+    }
+}
+
+/* SOBREPOSIÇÃO PARA PREENCHIMENTO TOTAL DO CABEÇALHO */
+
+/* 1. Remove qualquer restrição do container pai na View de Horas */
+.view-container.view-no-padding {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    max-width: 100% !important;
+    overflow-x: hidden;
+}
+
+/* 2. Força o cabeçalho a ocupar 100% da largura e encostar no topo */
+.hero-header.theme-purple {
+    width: 100% !important;
+    margin: 0 !important;
+    padding-top: 50px !important; /* Ajuste para não colar na barra de status do celular */
+    border-radius: 0 !important;   /* Garante que as quinas superiores não fiquem arredondadas */
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+/* 3. Ajuste da Seta (Botão Voltar) para o padrão da imagem */
+.theme-purple .btn-back-white {
+    top: 30px !important;
+    left: 15px !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important; 
+}
+
+/* --- CABEÇALHO (CORREÇÃO MOBILE) --- */
+.hero-header.theme-purple {
+    background: radial-gradient(circle at 50% 0%, #7B1FA2 0%, #4A148C 100%) !important;
+    padding: 100px 24px 70px 24px !important; /* Aumentado para a seta não bater no texto */
+    text-align: center;
+    position: relative;
+    width: 100%;
+}
+
+.theme-purple .btn-back-white {
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 18px;
+    border-radius: 30px;
+    backdrop-filter: blur(8px);
+    z-index: 50;
+}
+
+/* --- ABAS (SOLUÇÃO DO BOTÃO CORTADO) --- */
+.tabs-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    /* O padding-right de 80px garante que o botão "7 dias" apareça inteiro */
+    padding: 10px 80px 20px 24px !important; 
+    -webkit-overflow-scrolling: touch;
+}
+.tab-pill { flex-shrink: 0 !important; }
+
+/* --- GRID DE HORAS (LADO A LADO) --- */
+.grid-horas-area {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important; /* 3 colunas perfeitas */
+    gap: 12px;
+    padding: 0 24px;
+}
+
+.hora-bubble {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 18px;
+    padding: 18px 5px;
+    text-align: center;
+}
+
+/* --- LISTA DE 7 DIAS (UM ABAIXO DO OUTRO) --- */
+.list-7dias-area {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 24px;
+}
+
+.card-reflexao-7dias {
+    background: #FFFFFF;
+    border-left: 5px solid #7B1FA2;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* =========================================================
+   DESIGN SYSTEM PREMIUM — NUMEROLOGIA DA CASA
+   Foco: Luxo Silencioso, Hierarquia Nobre e Mobile UX
+   ========================================================= */
+
+:root {
+    /* Paleta Nobre Refinada */
+    --c-house-primary: #1f4029;   /* Verde Botânico */
+    --c-house-accent: #6b9c7d;    /* Sage */
+    --c-house-danger: #96281b;    /* Rubi Alerta */
+    --c-house-bg: #f2f5f3;        /* Off-white Mineral */
+    
+    /* Sistema de Profundidade */
+    --sh-premium: 0 15px 35px -10px rgba(31, 64, 41, 0.12);
+    --sh-totem: 0 10px 20px rgba(31, 64, 41, 0.05);
+
+    /* Tipografia Fluida */
+    --fs-h1: clamp(2.2rem, 8vw, 3.2rem);
+    --fs-h2: clamp(1.5rem, 6vw, 2rem);
+    --fs-num-hero: clamp(5.5rem, 15vw, 8rem);
+    --fs-body: clamp(1rem, 2.5vw, 1.15rem);
+    
+    --radius-lg: 32px;
+    --radius-md: 20px;
+}
+
+/* --- 1. ESTRUTURA GERAL & SAFE AREAS --- */
+.view-container {
+    background-color: var(--c-house-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Ajuste Crítico: Respiro para o menu inferior não tampar os botões */
+    padding-bottom: calc(140px + env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden;
+}
+
+.view-no-padding { padding: 0 !important; }
+
+/* Animação de Entrada Líquida */
+.animate-fade-in {
+    animation: liquidEntry 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes liquidEntry {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 2. CABEÇALHOS HERO (IMPACTO VISUAL) --- */
+.hero-header {
+    width: 100%;
+    padding: 60px 24px 90px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    clip-path: ellipse(150% 100% at 50% 0%);
+    margin-bottom: -35px;
+    z-index: 1;
+}
+
+.theme-house-result { background: radial-gradient(circle at top right, var(--c-house-primary), #0d1a11) !important; }
+.theme-alert { background: radial-gradient(circle at top right, var(--c-house-danger), #5c160c) !important; }
+.theme-purple { background: radial-gradient(circle at 50% 0%, #7B1FA2 0%, #4A148C 100%) !important; }
+
+.hero-number-xl {
+    font-family: var(--font-serif);
+    font-size: var(--fs-num-hero);
+    font-weight: 700;
+    line-height: 1;
+    margin: 10px 0;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+.diagnosis-badge {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    padding: 8px 18px;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* --- 3. FOLHA DE LEITURA (READING SHEET) --- */
+.reading-sheet {
+    background: #fff;
+    border-radius: 40px 40px 0 0;
+    padding: 45px 28px;
+    width: 100%;
+    max-width: 650px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 -15px 40px rgba(0,0,0,0.04);
+}
+
+.text-body {
+    font-size: var(--fs-body);
+    line-height: 1.85;
+    color: #3e4859;
+    text-align: left;
+}
+
+/* --- 4. FORMULÁRIOS & INPUTS --- */
+.icon-badge-pulse {
+    width: 85px; height: 85px;
+    background: var(--c-sage-pastel);
+    color: var(--c-house-primary);
+    border-radius: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.8rem;
+    margin: 0 auto 20px;
+    box-shadow: var(--sh-totem);
+    animation: pulse-house 2s infinite;
+}
+
+@keyframes pulse-house {
+    0% { box-shadow: 0 0 0 0 rgba(31, 64, 41, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(31, 64, 41, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(31, 64, 41, 0); }
+}
+
+.header-title-premium {
+    font-family: var(--font-serif);
+    font-size: var(--fs-h1);
+    color: var(--c-house-primary);
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.header-subtitle-premium {
+    font-size: 1rem;
+    color: var(--c-text-sec);
+    max-width: 80%;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.premium-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 35px 25px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--sh-premium);
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.form-group-premium { margin-bottom: 25px; text-align: left; }
+
+.form-label-premium {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: var(--c-house-primary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+}
+
+.form-input-premium {
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid #e2e5e4;
+    background: #fcfdfd;
+    font-size: 1.2rem;
+    text-align: left;
+    transition: all 0.4s ease;
+}
+
+.form-input-premium:focus {
+    background: #fff;
+    border-color: var(--c-house-accent);
+    box-shadow: 0 12px 25px -10px rgba(107, 156, 125, 0.3);
+    outline: none;
+}
+
+/* --- 5. CARROSSEL DE HARMONIZAÇÃO (FÍSICA MOBILE) --- */
+.carousel-wrapper-house {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    padding: 10px 24px 40px;
+    width: 100%;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.carousel-wrapper-house::-webkit-scrollbar { display: none; }
+
+.slide-technique {
+    min-width: 88vw;
+    scroll-snap-align: center;
+}
+
+.instruction-box-premium {
+    background: #fff;
+    border-radius: 32px;
+    padding: 35px 28px;
+    box-shadow: var(--sh-premium);
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.technique-label {
+    position: absolute;
+    top: 1px; left: 30px;
+    background: var(--c-house-primary);
+    color: #fff;
+    padding: 6px 18px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.highlight-vibration-box {
+    background: #f8faf9;
+    border: 1.5px solid #eef2f0;
+    border-radius: 24px;
+    padding: 25px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.highlight-vibration-box .val {
+    font-family: var(--font-serif);
+    font-size: 3.5rem;
+    color: var(--c-house-primary);
+    line-height: 1;
+    font-weight: 700;
+}
+
+.image-vago-placeholder {
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(145deg, #f2f5f3, #ffffff);
+    border-radius: 32px;
+    border: 2px dashed #d1d9d5;
+    display: flex;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    color: var(--c-text-soft);
+}
+
+/* --- 6. GRID DE CATEGORIAS --- */
+.grid-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+}
+
+.card-item {
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: var(--sh-totem);
+    transition: transform 0.2s;
+    text-align: center;
+}
+
+.bg-mint { background: #e0f2f1; border: 1px solid #b2dfdb; }
+.bg-peach { background: #fff3e0; border: 1px solid #ffe0b2; }
+
+/* --- 7. BOTÕES E CTAS SUPREMOS --- */
+.btn-primary-premium, .btn-primary {
+    background: var(--c-house-primary);
+    color: #ffffff;
+    width: 100%;
+    max-width: 340px;
+    padding: 22px;
+    border-radius: 100px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    font-size: 0.95rem;
+    border: none;
+    box-shadow: 0 15px 35px -10px rgba(31, 64, 41, 0.4);
+    cursor: pointer;
+    margin: 10px auto 0;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-primary-premium:active { transform: scale(0.96); opacity: 0.9; }
+
+/* --- 8. INDICADORES & FEEDBACK --- */
+.carousel-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.dot {
+    width: 8px; height: 8px;
+    background: #d1d9d5;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.dot.active { width: 28px; background: var(--c-house-accent); border-radius: 10px; }
+
+.feedback-box {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.feedback-box.error { background: #fff5f4; border: 1px solid #fee2e1; color: var(--c-house-danger); }
+.feedback-box.success { background: #f0f7f3; border: 1px solid #dcece3; color: var(--c-house-primary); }
+
+.casa-action-footer { width: 100%; display: flex; justify-content: center; padding: 0 24px; }
+
+/* --- 9. AJUSTES VOLTAR --- */
+.btn-back-light {
+    color: var(--c-house-primary);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.btn-back-white {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 30px;
+}
+
+/* --- AJUSTE DE RESPIRADA NO CABEÇALHO --- */
+.view-container header {
+    padding: 50px 24px 30px !important; /* Aumentado o padding superior e inferior */
+    margin-bottom: 20px !important;    /* Espaço extra para não "comer" a tag */
+}
+
+/* --- LEITURA TÉCNICA DAS LETRAS (SANS-SERIF) --- */
+.highlight-vibration-box .val {
+    /* Mudança para Sans-Serif para máxima legibilidade */
+    font-family: var(--font-sans) !important; 
+    font-size: clamp(3.2rem, 12vw, 4.2rem) !important;
+    font-weight: 900 !important; /* Peso extra para destacar o desenho da letra */
+    color: var(--c-house-primary);
+    line-height: 1;
+    letter-spacing: -1px; /* Ajuste fino de kerning */
+    display: block;
+    text-transform: uppercase;
+}
+
+/* Ajuste sutil na tag para ela se distanciar do conteúdo da caixa */
+.technique-label {
+    top: 1px !important; /* Subi um pouco mais para dar hierarquia */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+/* --- DISPLAY DE LETRAS PREMIUM (CORREÇÃO DE PROPORÇÃO) --- */
+
+/* Container que envolve as letras */
+.highlight-vibration-box .val {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* Espaçamento entre os elementos */
+    flex-wrap: wrap; /* Garante que não quebre feio em telas muito pequenas */
+    font-family: var(--font-sans) !important; /* Fonte Sans sugerida */
+    margin-top: 10px;
+}
+
+/* Estilo individual de cada Letra */
+.letter-chip {
+    background: #ffffff;
+    color: var(--c-house-primary);
+    width: 65px;
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    font-size: 3rem !important; /* Tamanho da letra fixo e imponente */
+    font-weight: 900;
+    box-shadow: 0 4px 12px rgba(31, 64, 41, 0.08);
+    border: 1px solid rgba(107, 156, 125, 0.2);
+}
+
+/* Estilo do Separador "OU" (Sutil e Proporcional) */
+.letter-separator {
+    font-size: 0.7rem !important;
+    font-weight: 800;
+    color: var(--c-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+    padding: 0 4px;
+}
+
+/* Ajuste no box pai para acomodar os novos elementos */
+.highlight-vibration-box {
+    background: #f4f7f6 !important; /* Fundo levemente mais escuro para destacar os chips brancos */
+    padding: 20px 15px !important;
+    border-radius: 24px !important;
+    border: none !important;
+}
+
+/* --- AJUSTES DE CENTRALIZAÇÃO E HIERARQUIA --- */
+
+/* Força o título principal a centralizar */
+.view-container h1.header-greeting-serif {
+    text-align: center !important;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Centraliza o subtítulo */
+.view-container p.welcome-desc {
+    text-align: center !important;
+    width: 100%;
+}
+
+/* Reestrutura o cabeçalho do card para vertical */
+.casa-header-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Aumenta o destaque do círculo numérico acima do texto */
+.casa-icon-badge-top {
+    width: 50px;
+    height: 50px;
+    background: var(--c-sage-pastel);
+    color: var(--c-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Ajuste do título do card para centralizar */
+.casa-card-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    color: var(--c-primary);
+    line-height: 1.3;
+}
+
+/* --- CORREÇÃO DO BOX DE IMAGEM (TEXTO GRUDADO) --- */
+.image-vago-placeholder {
+    width: 100%;
+    min-height: 240px; /* Mudado de height para min-height para acomodar textos longos */
+    background: linear-gradient(145deg, #f2f5f3, #ffffff);
+    border-radius: 32px;
+    border: 2px dashed #d1d9d5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    /* AJUSTES FINAIS SOLICITADOS */
+    padding: 30px;            /* Adiciona respiro para o texto não encostar no tracejado */
+    text-align: center;       /* Centraliza o texto horizontalmente */
+    box-sizing: border-box;   /* Garante que o padding não "estoure" a largura do card */
+    
+    color: var(--c-text-soft);
+    margin-bottom: 30px;
+}
+
+.image-vago-placeholder h4 {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    line-height: 1.5;         /* Melhora o ritmo visual quando o texto quebra linha */
+    color: var(--c-house-primary);
+    margin-bottom: 12px;
+    margin-top: 0;
+}
+/* --- REFINAMENTO DO CABEÇALHO DE ALINHAMENTO --- */
+
+/* Título Principal */
+.header-title-premium {
+    font-family: var(--font-serif);
+    font-size: clamp(1.6rem, 5vw, 1.9rem) !important; /* Tamanho elegante e responsivo */
+    color: var(--c-house-primary);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+/* Subtítulo Sofisticado */
+.header-subtitle-premium {
+    font-size: 0.95rem !important;
+    color: var(--c-text-sec); /* Cinza suave */
+    font-style: italic; /* Toque Premium */
+    max-width: 85%; /* Evita que o texto quebre de forma bruta */
+    margin: 0 auto;
+    line-height: 1.5;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+/* Garantia de respiro para as tags que vêm abaixo */
+.carousel-wrapper-house {
+    margin-top: 25px !important; /* Empurra o conteúdo para baixo das tags */
+}
+
+/* =========================================================
+   CORREÇÃO DE SOBREPOSIÇÃO E RESPIRADA PREMIUM
+   ========================================================= */
+
+/* 1. CORREÇÃO DA FOLHA DE LEITURA (Evita "engolir" o resultado) */
+.reading-sheet {
+    /* Reduzimos a subida negativa para não cobrir os nomes/chips de resultado */
+    margin-top: -30px !important; 
+    padding-top: 50px !important;
+    border-radius: 40px 40px 0 0 !important;
+    /* Adiciona uma transição suave para evitar saltos visuais */
+    transition: margin-top 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 2. REFINAMENTO DE CABEÇALHOS (Hero Headers) */
+.hero-header {
+    /* Aumentamos o padding inferior para dar espaço aos subtítulos e badges */
+    padding-bottom: 110px !important; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* 3. PADRONIZAÇÃO DE SUBTÍTULOS (Estética Premium) */
+.header-subtitle-premium, 
+.hero-subtitle,
+.view-container p[style*="font-size: 0.7rem"] { /* Alvo do subtítulo da Sinastria */
+    font-family: var(--font-sans) !important;
+    font-size: 0.95rem !important;
+    font-weight: 400 !important;
+    line-height: 1.6 !important;
+    color: rgba(255, 255, 255, 0.85) !important; /* Cor mais suave no fundo escuro */
+    max-width: 85% !important;
+    margin: 15px auto 25px !important;
+    text-transform: none !important; /* Remove o excesso de uppercase se houver */
+    letter-spacing: 0.3px !important;
+}
+
+/* Subtítulos em fundo claro (como na tela de categorias) */
+.view-container .header-subtitle-premium {
+    color: var(--c-text-sec) !important;
+    font-style: italic;
+}
+
+/* 4. CORREÇÃO DO CHIP DE RESULTADO (Sinastria do Amor) */
+/* Garante que os nomes (ANA + ASA) tenham espaço e não fiquem colados */
+.hero-header div[style*="background:rgba(255,255,255,0.15)"] {
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(8px) !important;
+    padding: 12px 28px !important;
+    z-index: 2;
+}
+
+/* 5. AJUSTE DE RESPIRADA NO "SEU ALINHAMENTO" */
+header[style*="text-align:center"] {
+    padding-top: 50px !important;
+    padding-bottom: 20px !important;
+    margin-bottom: 35px !important; /* Espaço antes do carrossel começar */
+}
+
+/* 6. REFINAMENTO DAS LETRAS DE FIXAÇÃO (image_3da51d.png) */
+.highlight-vibration-box {
+    padding: 30px 20px !important;
+    background: #f8faf9 !important;
+    border: 1px solid rgba(31, 64, 41, 0.05) !important;
+}
+
+.highlight-vibration-box .val {
+    font-size: clamp(2.5rem, 10vw, 3.5rem) !important;
+    letter-spacing: 4px !important;
+    margin-top: 15px !important;
+}
+
+/* 7. BOX DIDÁTICO DENTRO DA FOLHA (Sinastria) */
+/* Ajuste para o texto longo não "sufocar" o design */
+.reading-sheet p[style*="font-size: 0.7rem"] {
+    background: #fdf2f2 !important; /* Fundo leve para o texto de aviso do amor */
+    color: #96281b !important;
+    padding: 20px !important;
+    border-radius: 16px !important;
+    margin: 20px 0 !important;
+    line-height: 1.5 !important;
+    text-align: center !important;
+}
+
+/* =========================================================
+   REFAZENDO NAVEGAÇÃO: FOCO EM RESPIRO E SOMBRA ORGÂNICA
+   ========================================================= */
+
+/* 1. CONTAINER: Aumenta o espaçamento interno e a distância do topo */
+.tabs-scroll {
+    display: flex !important;
+    gap: 16px !important; /* Espaço maior entre os botões */
+    padding: 15px 32px 30px !important; /* Respiro lateral e inferior aumentado */
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 2. PILLS (BOTÕES): Mais altos e com tipografia refinada */
+.tab-pill {
+    padding: 12px 28px !important; /* Aumenta a área de toque */
+    border-radius: 40px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    background: #f8faf9 !important; /* Fundo mais limpo para inativos */
+    color: #6a7672 !important;
+    border: 1px solid rgba(31, 64, 41, 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: none !important; /* Remove sombras internas pesadas */
+}
+
+/* 3. PILL ATIVA: Sombra multicamadas (Soft Glow) */
+.tab-pill.active {
+    background: var(--c-sage-pastel) !important;
+    color: var(--c-primary) !important;
+    font-weight: 800 !important;
+    border-color: rgba(31, 64, 41, 0.1) !important;
+    
+    /* Sombra técnica: camadas leves em vez de uma mancha escura */
+    box-shadow: 
+        0 2px 4px rgba(31, 64, 41, 0.02),
+        0 10px 20px -5px rgba(31, 64, 41, 0.12), 
+        0 4px 6px -2px rgba(31, 64, 41, 0.05) !important;
+    
+    transform: translateY(-2px) !important; /* Efeito de elevação sutil */
+}
+
+/* 4. FEEDBACK DE TOQUE */
+.tab-pill:active {
+    transform: scale(0.94) !important;
+    background: #f0f2f1 !important;
+}
+
+/* --- AJUSTE DOS ÍCONES LADO A LADO COM O TÍTULO --- */
+
+.section-header {
+    display: flex !important;
+    flex-direction: row !important; /* Força o alinhamento horizontal */
+    align-items: center !important;  /* Centraliza verticalmente o ícone com o texto */
+    gap: 16px !important;           /* Espaçamento entre ícone e título */
+    text-align: left !important;
+    margin-top: 30px !important;
+    border-bottom: 1px solid #f0f4f2;
+    padding-bottom: 10px;
+}
+
+/* Garante que o box do ícone não deforme */
+.section-header .icon-box, 
+.section-header .casa-icon-badge {
+    flex-shrink: 0 !important; 
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Remove margens do título que possam desalinhá-lo */
+.section-header .section-title,
+.section-header .casa-card-title {
+    margin: 0 !important;
+    font-family: var(--font-serif) !important;
+    font-size: 1.3rem !important;
+    line-height: 1.2 !important;
+    color: var(--c-primary);
+}
+
+/* ============================================================
+   ESTILO PREMIUM EXCLUSIVO: HORAS IGUAIS (SCOPED)
+   ============================================================ */
+
+/* 1. CABEÇALHO ROXO (Apenas nas telas de Horas) */
+.view-no-padding .hero-header.theme-purple {
+    background: linear-gradient(135deg, #5b2591 0%, #4a1d75 100%); /* Roxo Profundo */
+    padding-top: 60px;
+    padding-bottom: 60px; /* Espaço extra para a folha subir */
+    border-radius: 0; /* Garante que não arredonde embaixo */
+    position: relative;
+    z-index: 1;
+}
+
+/* Tipografia do Título no Header */
+.view-no-padding .hero-header.theme-purple .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    font-size: 1.5rem;
+    max-width: 85%;
+    margin: 0 auto;
+}
+
+/* Tipografia do Número Grande no Header */
+.view-no-padding .hero-header.theme-purple .hero-number-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+/* 2. EFEITO "FOLHA SUBINDO" (Apenas quando a folha vem após um header roxo) */
+.view-no-padding .hero-header.theme-purple + .reading-sheet {
+    margin-top: -40px; /* Puxa a folha branca para cima do roxo */
+    border-radius: 30px 30px 0 0; /* Arredonda apenas o topo */
+    padding-top: 35px;
+    position: relative;
+    z-index: 10;
+    background: #fff;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.05); /* Sombra suave para destacar a sobreposição */
+    border: none; /* Remove bordas antigas se houver */
+}
+
+/* 3. BOTÃO VOLTAR (Estilo Transparente Específico para fundo Roxo) */
+.view-no-padding .hero-header.theme-purple .btn-back-white {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(4px);
+    border-radius: 30px;
+    padding: 8px 18px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    top: 24px;
+    left: 20px;
+}
+
+/* 4. GRID DE HORAS (Já é específico, mas vamos refinar o visual) */
+.grid-horas-area {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Força 3 colunas sempre */
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.hora-bubble {
+    background: #fff;
+    border: 1px solid #f3f4f6;
+    border-radius: 16px;
+    padding: 18px 8px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transition: transform 0.2s ease, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hora-bubble:active {
+    transform: scale(0.96);
+    background: #fafafa;
+}
+
+.hora-bubble strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: #1f2937;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.hora-bubble span {
+    font-size: 0.6rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* 5. TABS (Scoping para não afetar o Dashboard) */
+/* Afeta apenas as tabs DENTRO da folha branca das horas */
+.view-no-padding .reading-sheet .tabs-scroll {
+    background: #f8f9fa;
+    border-radius: 30px;
+    padding: 5px;
+    display: inline-flex;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.view-no-padding .reading-sheet .tab-pill {
+    color: #6b7280;
+    border-radius: 25px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.view-no-padding .reading-sheet .tab-pill.active {
+    background: #d1fae5; /* Verde Mint Suave */
+    color: #047857;      /* Verde Escuro Elegante */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 6. DETALHES INTERNOS (Box de Texto e Versículo) */
+
+/* Caixa de Introdução */
+.intro-box p {
+    font-family: 'Inter', sans-serif; /* Fonte limpa para leitura */
+    color: #374151;
+    text-align: justify;
+}
+
+/* Versículo com borda lateral roxa */
+.quote-border {
+    border-left: 3px solid #7c3aed; /* Roxo vibrante */
+    padding-left: 18px;
+    margin: 20px 0;
+    color: #4b5563;
+    font-style: italic;
+    font-size: 1.05rem;
+    background: transparent;
+}
+
+/* Lista de Tópicos com Check Roxo */
+.list-topics li {
+    margin-bottom: 14px;
+    color: #374151;
+    font-size: 0.95rem;
+    display: flex;
+    gap: 12px;
+}
+
+.list-topics li i.icon-check {
+    color: #6d28d9; /* Roxo para os ícones */
+    font-size: 1.3rem;
+    margin-top: 1px;
+}
+
+/* Mensagem Final Centralizada */
+.final-message-box {
+    background: #fdfbff; /* Fundo levemente roxo/branco */
+    border: 1px dashed #d8b4fe; /* Borda tracejada roxa clara */
+    margin-top: 40px;
+}
+.final-message-box i {
+    color: #10b981; /* Estrela verde */
+}
+
+/* ============================================================
+   ESTILO PREMIUM: 7 DIAS DE REFLEXÃO
+   ============================================================ */
+
+/* 1. CONTAINER DA LISTA */
+.list-7dias-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Mais espaço entre os cards para "respirar" */
+    padding: 10px 5px; /* Margem de segurança para sombras não cortarem */
+}
+
+/* 2. O CARD DO DIA (A Mágica acontece aqui) */
+.card-reflexao-7dias {
+    background: #fff;
+    border-radius: 20px; /* Bordas bem arredondadas (Padrão do App) */
+    padding: 25px 25px 25px 35px; /* Padding extra na esquerda p/ não colar na borda colorida */
+    position: relative; /* Necessário para a borda lateral */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04); /* Sombra suave e elegante */
+    border: 1px solid rgba(0,0,0,0.03); /* Borda ultra sutil */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden; /* Garante que a borda lateral respeite o arredondamento */
+}
+
+/* Efeito de clique */
+.card-reflexao-7dias:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+/* 3. BORDA LATERAL DECORATIVA (O "Charme" Roxo) */
+.card-reflexao-7dias::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px; /* Espessura da linha colorida */
+    background: linear-gradient(180deg, #7c3aed 0%, #c084fc 100%); /* Degradê Roxo Premium */
+}
+
+/* 4. BADGE DO DIA (Etiqueta "1º DIA") */
+.day-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3e8ff; /* Fundo roxo muito claro */
+    color: #6d28d9;      /* Texto roxo forte */
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 30px; /* Formato de pílula */
+    margin-bottom: 15px; /* Espaço até o título */
+}
+
+/* 5. TIPOGRAFIA (Igualando ao resto do App) */
+
+/* Título do Card (Ex: Recomeço com Esperança) */
+.card-reflexao-7dias h4 {
+    font-family: 'Playfair Display', serif; /* A mesma fonte chique das Horas */
+    font-size: 1.5rem;
+    color: #1f2937; /* Cinza escuro quase preto */
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+}
+
+/* Texto do Exercício */
+.card-reflexao-7dias p {
+    font-family: 'Inter', sans-serif; /* Fonte limpa para leitura */
+    font-size: 0.95rem;
+    color: #4b5563; /* Cinza médio para não cansar a vista */
+    line-height: 1.6;
+    margin: 0;
+}
+/* ============================================================
+   UI: SETAS INDICATIVAS NOS CARDS (MINIMALISTAS)
+   ============================================================ */
+
+/* 1. Prepara o Card para receber a seta */
+.card-premium {
+    position: relative; /* Necessário para posicionar a seta */
+}
+
+/* 2. Desenha a Seta (Chevron) via CSS */
+.card-premium::after {
+    content: '';          /* Cria o elemento virtual */
+    position: absolute;   /* Posiciona livremente */
+    top: 20px;            /* Distância do topo */
+    right: 20px;          /* Distância da direita */
+    
+    /* Desenha a forma de 'L' */
+    width: 7px;
+    height: 7px;
+    border-top: 2px solid var(--c-primary);   /* Cor da linha (usa a cor principal do tema) */
+    border-right: 2px solid var(--c-primary); /* Cor da linha */
+    
+    /* Gira o 'L' para virar uma seta */
+    transform: rotate(45deg); 
+    
+    /* Estilo Minimalista */
+    opacity: 0.3;         /* Bem transparente para não brigar com o ícone principal */
+    border-radius: 1px;   /* Ponta levemente arredondada */
+    transition: all 0.3s ease; /* Animação suave */
+}
+
+/* 3. Efeito ao Clicar/Tocar (Feedback Visual) */
+.card-premium:active::after {
+    opacity: 1;           /* Fica 100% visível */
+    transform: rotate(45deg) translate(2px, -2px); /* Move levemente para a direita/cima */
+}
+/* ============================================================
+   UI: SETAS NOS BANNERS ESPECIAIS (AMOR & CASA)
+   ============================================================ */
+
+/* 1. Esconde a seta antiga (ícone) para limpar o visual */
+.premium-banner .banner-arrow {
+    display: none !important;
+}
+
+/* 2. Garante que o banner aceite o posicionamento da nova seta */
+.premium-banner {
+    position: relative;
+}
+
+/* 3. Desenha a Seta Minimalista (Estilo Chevron CSS) */
+.premium-banner::after {
+    content: '';
+    position: absolute;
+    top: 50%;             /* Centraliza verticalmente */
+    right: 24px;          /* Distância da borda direita */
+    margin-top: -1px;     /* Ajuste fino do centro */
+    
+    /* Tamanho e Forma */
+    width: 8px;
+    height: 8px;
+    
+    /* Linhas da seta (Cinza suave para combinar com qualquer cor de card) */
+    border-top: 2px solid #9ca3af; 
+    border-right: 2px solid #9ca3af; 
+    
+    /* Rotação e Estilo */
+    transform: rotate(45deg) translateY(-50%);
+    opacity: 0.5;         /* Discreto */
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+/* 4. Efeito ao Clicar (Feedback Visual) */
+.premium-banner:active::after {
+    opacity: 1;
+    border-color: var(--c-primary); /* Muda para a cor principal ao tocar */
+    transform: rotate(45deg) translate(2px, -2px) translateY(-50%); /* Move levemente */
+}
+
+/* ============================================================
+   UI: SETAS NOS CARDS DE DESAFIOS (LISTA)
+   ============================================================ */
+
+/* 1. Ajusta o card para abrir espaço seguro para a seta */
+.boutique-card {
+    position: relative;             /* Para posicionar a seta */
+    padding-right: 50px !important; /* Empurra o círculo para a esquerda, criando área para a seta */
+}
+
+/* 2. Desenha a Seta (Chevron Lateral) */
+.boutique-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;             /* Meio vertical */
+    right: 24px;          /* Distância da borda direita */
+    
+    /* Tamanho e Forma */
+    width: 7px;
+    height: 7px;
+    border-top: 2px solid var(--c-primary);   /* Usa a cor do tema */
+    border-right: 2px solid var(--c-primary);
+    
+    /* Centralização Exata e Rotação */
+    transform: translateY(-50%) rotate(45deg);
+    
+    /* Estilo Minimalista */
+    opacity: 0.3;
+    border-radius: 1px;
+    transition: all 0.2s ease;
+}
+
+/* 3. Feedback ao tocar */
+.boutique-card:active::after {
+    opacity: 1; /* Fica forte ao clicar */
+    transform: translateY(-50%) rotate(45deg) translate(2px, -2px); /* Move levemente */
+}
+/* ============================================================
+   FIX FINAL: SOBRESCREVER A REGRA "ACTIVE" TEIMOSA
+   ============================================================ */
+
+/* Aqui estamos dizendo: "Não importa o que o .active diga, 
+   o círculo tem que ser BRANCO com número COLORIDO" */
+
+.timeline-step.active .cycle-circle {
+    background: #ffffff !important;       /* Força fundo BRANCO (Mata o var(--c-primary)) */
+    color: var(--c-primary) !important;   /* Força número VERDE/ROXO (Mata o color: #fff) */
+    
+    /* Adiciona uma borda sutil para destacar a bolinha branca do fundo branco */
+    border: 2px solid var(--c-primary) !important; 
+    
+    /* Garante visibilidade total */
+    opacity: 1 !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+}
+
+
